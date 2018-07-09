@@ -25,6 +25,13 @@
  * $Revision:    V.1.0.0
  *
  * Target Processor:  Cortex-M cores
+ * 
+ * Modification: INT-Q extension
+ * $Date:        09. July 2018
+ * $Authors:     Manuele Rusci - manuele.rusci@unibo.it
+ *               Alessandro Capotondi - alessandro.capotondi@unibo.it
+ *               Francesco Conti - f.conti@unibo.it
+ *
  * -------------------------------------------------------------------- */
 
 #ifndef _ARM_NNSUPPORTFUNCTIONS_H_
@@ -133,6 +140,62 @@ __STATIC_FORCEINLINE void *read_and_pad_reordered(void *source, q31_t * out1, q3
 
         return source;
 }
+
+/**
+ * @brief read and expand one INT4 word into two INT16 words with reordering
+ */
+__STATIC_INLINE void *read_and_pad_reordered_INT4(void *source, int32_t * out1, int32_t * out2, int32_t * out3, int32_t * out4)
+{
+
+#ifndef ARM_MATH_BIG_ENDIAN
+        q31_t     inA = *__SIMD32(source)++;
+
+        *out1 = __SXTB16(__ROR(__SXTB16( inA <<  4) , 4 ) );
+        *out2 = __SXTB16(__ROR(__SXTB16( inA      ) , 4 ) ) ;
+        *out3 = __SXTB16(__ROR(__SXTB16( __ROR(inA,  4) ) , 4 ) ) ;
+        *out4 = __SXTB16(__ROR(__SXTB16( __ROR(inA,  8) ) , 4 ) );
+#else
+        *out4 = __SXTB16(__ROR(__SXTB16( inA <<  4) , 4 ) );
+        *out3 = __SXTB16(__ROR(__SXTB16( inA      ) , 4 ) ) ;
+        *out2 = __SXTB16(__ROR(__SXTB16( __ROR(inA,  4) ) , 4 ) ) ;
+        *out1 = __SXTB16(__ROR(__SXTB16( __ROR(inA,  8) ) , 4 ) );
+#endif
+
+        return source;
+}
+
+
+/**
+ * @brief read and expand one INT2 word into two INT16 words with reordering
+ */
+__STATIC_INLINE void *read_and_pad_reordered_INT2(  void *source, int32_t * out1, int32_t * out2, int32_t * out3, int32_t * out4,
+                                                    int32_t * out5, int32_t * out6, int32_t * out7, int32_t * out8)
+{
+        q31_t     inA = *__SIMD32(source)++;
+#ifndef ARM_MATH_BIG_ENDIAN
+        *out1 = __SXTB16(__ROR(__SXTB16( inA <<  6) , 6 ) );
+        *out2 = __SXTB16(__ROR(__SXTB16( inA <<  4) , 6 ) );
+        *out3 = __SXTB16(__ROR(__SXTB16( inA <<  2) , 6 ) );
+        *out4 = __SXTB16(__ROR(__SXTB16( inA      ) , 6 ) );
+        *out5 = __SXTB16(__ROR(__SXTB16( inA >>  2) , 6 ) );
+        *out6 = __SXTB16(__ROR(__SXTB16( inA >>  4) , 6 ) );
+        *out7 = __SXTB16(__ROR(__SXTB16( inA >>  6) , 6 ) );
+        *out8 = __SXTB16(__ROR(__SXTB16( inA >>  8) , 6 ) );
+#else
+        *out8 = __SXTB16(__ROR(__SXTB16( inA <<  6) , 6 ) );
+        *out7 = __SXTB16(__ROR(__SXTB16( inA <<  4) , 6 ) );
+        *out6 = __SXTB16(__ROR(__SXTB16( inA <<  2) , 6 ) );
+        *out5 = __SXTB16(__ROR(__SXTB16( inA      ) , 6 ) );
+        *out4 = __SXTB16(__ROR(__SXTB16( inA >>  2) , 6 ) );
+        *out3 = __SXTB16(__ROR(__SXTB16( inA >>  4) , 6 ) );
+        *out2 = __SXTB16(__ROR(__SXTB16( inA >>  6) , 6 ) );
+        *out1 = __SXTB16(__ROR(__SXTB16( inA >>  8) , 6 ) );
+#endif
+
+        return source;
+}
+
+
 #endif
 
 /**

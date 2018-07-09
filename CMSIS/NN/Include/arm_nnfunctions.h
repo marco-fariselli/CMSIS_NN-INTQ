@@ -25,6 +25,12 @@
  * $Revision:    V.1.0.0
  *
  * Target Processor:  Cortex-M cores
+ *
+ * Modification: INT-Q extension
+ * $Date:        09. July 2018
+ * $Authors:     Manuele Rusci - manuele.rusci@unibo.it
+ *               Alessandro Capotondi - alessandro.capotondi@unibo.it
+ *               Francesco Conti - f.conti@unibo.it
  * -------------------------------------------------------------------- */
 
 /**
@@ -1002,6 +1008,80 @@ extern    "C"
    */
 
     void      arm_softmax_q15(const q15_t * vec_in, const uint16_t dim_vec, q15_t * p_out);
+
+
+
+    /*
+     *  Quantized Convolutional Layers
+     *
+     */
+        arm_status
+    arm_convolve_HWC_BIN_fast(const uint32_t * Im_in,
+                              const uint16_t dim_im_in,
+                              const uint16_t ch_im_in,
+                              const uint32_t * wt,
+                              const uint16_t ch_im_out,
+                              const uint16_t dim_kernel,
+                              const uint16_t padding,
+                              const uint16_t stride,
+                              uint8_t * Im_out,
+                              const uint16_t dim_im_out,
+                              uint32_t * bufferA,      
+                              const int16_t * pThreshold,
+                              int8_t * bufferB);
+
+    arm_status
+    arm_convolve_HWC_INT2_fast( const int8_t * Im_in,
+                                const uint16_t dim_im_in,
+                                const uint16_t ch_im_in,
+                                const int8_t * wt,
+                                const uint16_t ch_im_out,
+                                const uint16_t dim_kernel,
+                                const uint16_t padding,
+                                const uint16_t stride,
+                                int8_t * Im_out,
+                                const uint16_t dim_im_out,
+                                int16_t * bufferA,
+                                const int16_t * pThreshold,
+                                int8_t * bufferB);
+
+    arm_status
+    arm_convolve_HWC_INT4_fast( const int8_t * Im_in,
+                                const uint16_t dim_im_in,
+                                const uint16_t ch_im_in,
+                                const int8_t * wt,
+                                const uint16_t ch_im_out,
+                                const uint16_t dim_kernel,
+                                const uint16_t padding,
+                                const uint16_t stride,
+                                int8_t * Im_out,
+                                const uint16_t dim_im_out,
+                                int16_t * bufferA,
+                                const int16_t * pThreshold,
+                                int8_t * bufferB);
+
+    int8_t     *arm_nn_mat_mult_kernel_int2_int16_reordered(const int8_t * pA,        
+                                                            const int16_t * pInBuffer,
+                                                            const uint16_t ch_im_out,
+                                                            const uint16_t numCol_A,
+                                                            const int16_t * pThreshold,
+                                                            int8_t * pOut);
+
+    int8_t     *arm_nn_mat_mult_kernel_int4_int16_reordered(const int8_t * pA,      
+                                                            const int16_t * pInBuffer,  
+                                                            const uint16_t ch_im_out, 
+                                                            const uint16_t numCol_A, 
+                                                            const int16_t * pThreshold,
+                                                            int8_t * pOut);      
+
+    uint32_t     *arm_nn_mat_mult_kernel_BIN_reordered( const uint32_t * pA,      
+                                                        const uint32_t * pInBuffer,
+                                                        const uint16_t ch_im_out,
+                                                        const uint32_t numCol_A,
+                                                        const int16_t * pThreshold,
+                                                        uint32_t * pOut);
+
+
 
 #ifdef __cplusplus
 }
