@@ -19,13 +19,13 @@
 
 /* ----------------------------------------------------------------------
  * Project:      CMSIS NN Library - INT-Q extension
- * Title:        arm_nn_mat_mult_kernel_BIN_reordered.c
- * Description:  Matrix-multiplication function for binary convolution with reordered columns
+ * Title:        arm_nn_mat_mult_kernel_int1_reordered.c
+ * Description:  Matrix-multiplication function for binary convolution
+ *               with reordered columns
  *
  * $Date:        09. July 2018
- * $Authors:    Manuele Rusci - manuele.rusci@unibo.it
- *              Alessandro Capotondi - alessandro.capotondi@unibo.it
- *              Francesco Conti - f.conti@unibo.it
+ * $Authors:     Manuele Rusci - manuele.rusci@unibo.it
+ *               Alessandro Capotondi - alessandro.capotondi@unibo.it
  *
  * Target Processor:  Cortex-M cores
  * -------------------------------------------------------------------- */
@@ -70,57 +70,56 @@ static inline int32_t popcnt32(uint32_t v) {
    * This function assumes that data in pInBuffer are reordered
    */
 
-uint32_t     *arm_nn_mat_mult_kernel_BIN_reordered( const uint32_t * pA,			       // weight buffer
-                                                    const uint32_t * pInBuffer,	     // input reordered buffer
-                                                    const uint16_t ch_im_out,	       // output channel dim
-                                                    const uint32_t numCol_A,	       // receptive field dim
-                          												  const int16_t * pThreshold,      // pointer to the threshold array
-                          												  uint32_t * pOut)				         // output buffer
+uint32_t *arm_nn_mat_mult_kernel_int1_reordered( const uint32_t * pA, // weight buffer
+                                                 const uint32_t * pInBuffer, // input reordered buffer
+                                                 const uint16_t ch_im_out, // output channel dim
+                                                 const uint32_t numCol_A, // receptive field dim
+												 const int16_t * pThreshold, // pointer to the threshold array
+												 uint32_t * pOut) // output buffer
 {
 
 #if defined (ARM_MATH_DSP)
-  /* set up the second output pointers */
-  int       i_feat_in, i;
+	/* set up the second output pointers */
+	int       i_feat_in, i;
 
-  //number of 32-bit features chuncks within the input and oputput activation maps
+	//number of 32-bit features chuncks within the input and oputput activation maps
 	int n_input_block = BIN_SIZE_INT32(numCol_A);
 	int n_output_block = BIN_SIZE_INT32(ch_im_out);
-  uint32_t * pInBuffer2 = pInBuffer + n_input_block;
+	const uint32_t * pIn  = pInBuffer;
+	const uint32_t * pIn2 = pInBuffer + n_input_block;
 
 	int16_t accum, accum2;
 	uint32_t * pOut2 =  pOut + n_output_block;
 
-  // cleaning output space
-	for(i=0; i < n_output_block ; i++){
-  		pOut[i] = 0;
-  		pOut2[i] = 0;
+	// cleaning output space
+	for(i = 0; i < n_output_block ; i++){
+	  pOut[i] = 0;
+	  pOut2[i] = 0;
 	}
 
-  // xnor popcnt convolution
-	for(i=0; i<ch_im_out; i++)
-  {
-  		accum = 0;
-  		accum2 = 0;
-  		for(i_feat_in=0; i_feat_in<n_input_block; i_feat_in++)
-      {
-    			accum += (int16_t) popcnt32(~(pInBuffer[i_feat_in]^pA[i_feat_in]));
-    			accum2 += (int16_t) popcnt32(~(pInBuffer2[i_feat_in]^pA[i_feat_in]));
-  		}
-  		pA += n_input_block;
+	// xnor popcnt convolution
+	for( i = 0; i < ch_im_out; i++){
+		accum = 0;
+		accum2 = 0;
+		for(i_feat_in=0; i_feat_in<n_input_block; i_feat_in++) {
+			accum += (int16_t) popcnt32(~(pIn[i_feat_in]^pA[i_feat_in]));
+			accum2 += (int16_t) popcnt32(~(pIn2[i_feat_in]^pA[i_feat_in]));
+		}
+		pA += n_input_block;
 
-      //thresholding and compression
-  		if(accum >= pThreshold[i])
-  		    pOut[BIT_ADDR(i)] |= (1<<BIT_POS(i));
-  		if(accum2 >= pThreshold[i])
-  		    pOut2[BIT_ADDR(i)] |= (1<<BIT_POS(i));
-
+		//thresholding and compression
+		if(accum >= pThreshold[i])
+			pOut[BIT_ADDR(i)] |= (1<<BIT_POS(i));
+		if(accum2 >= pThreshold[i])
+			pOut2[BIT_ADDR(i)] |= (1<<BIT_POS(i));
 	}
 
-  // skip one coloumn because of the two performed convolution
+	// skip one coloumn because of the two performed convolution
 	pOut += BIN_SIZE_INT32(2*ch_im_out);
 
-    /* return the new output pointer with offset */
-    return pOut;
+	/* return the new output pointer with offset */
+	return pOut;
+
 #else
 
     /* To be Completed */

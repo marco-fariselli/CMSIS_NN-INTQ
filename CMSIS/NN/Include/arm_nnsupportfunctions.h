@@ -94,11 +94,46 @@ void      arm_q7_to_q15_no_shift(const q7_t * pSrc, q15_t * pDst, uint32_t block
  * @param[in]       *pSrc points to the Q7 input vector    
  * @param[out]      *pDst points to the Q15 output vector   
  * @param[in]       blockSize length of the input vector    
- * @return none.    
- *
+ * @return none.
  */
-
 void      arm_q7_to_q15_reordered_no_shift(const q7_t * pSrc, q15_t * pDst, uint32_t blockSize);
+
+/**
+ * @brief  Converts the elements of the INT4 vector to reordered INT16 vector without left-shift
+ * @param[in]       *pSrc points to the INT4 input vector
+ * @param[out]      *pDst points to the INT16 output vector
+ * @param[in]       blockSize length of the input vector
+ * @return none.
+ */
+void      arm_int4_to_int16_reordered_no_shift(const int8_t * pSrc, int16_t * pDst, uint32_t blockSize);
+/**
+ * @brief  Converts the elements of the INT2 vector to reordered INT16 vector without left-shift
+ * @param[in]       *pSrc points to the INT2 input vector
+ * @param[out]      *pDst points to the INT16 output vector
+ * @param[in]       blockSize length of the input vector
+ * @return none.
+ */
+void      arm_int2_to_int16_reordered_no_shift(const int8_t * pSrc, int16_t * pDst, uint32_t blockSize);
+
+/**
+ * @brief  Converts the elements of the Asymmetric UINT8 vector to INT16 vector without left-shift
+ * @param[in]       *pSrc points to the Asymmetric UINT8 input vector
+ * @param[in]       Asymmetric UINT8 offset
+ * @param[out]      *pDst points to the INT16 output vector
+ * @param[in]       blockSize length of the input vector
+ * @return none.
+ */
+void      arm_asym_uint8_to_int16_no_shift(const uint8_t * pSrc, const uint8_t offset, int16_t * pDst, uint32_t blockSize);
+
+/**
+ * @brief  Converts the elements of the Asymmetric UINT8 vector to reordered INT16 vector without left-shift
+ * @param[in]       *pSrc points to the Asymmetric UINT8 input vector
+ * @param[in]       Asymmetric UINT8 offset
+ * @param[out]      *pDst points to the INT16 output vector
+ * @param[in]       blockSize length of the input vector
+ * @return none.
+ */
+void      arm_asym_uint8_to_int16_reordered_no_shift(const uint8_t * pSrc, const uint8_t offset, int16_t * pDst, uint32_t blockSize);
 
 #if defined (ARM_MATH_DSP)
 
@@ -144,7 +179,7 @@ __STATIC_FORCEINLINE void *read_and_pad_reordered(void *source, q31_t * out1, q3
 /**
  * @brief read and expand one INT4 word into two INT16 words with reordering
  */
-__STATIC_INLINE void *read_and_pad_reordered_INT4(void *source, int32_t * out1, int32_t * out2, int32_t * out3, int32_t * out4)
+__STATIC_INLINE void *read_and_pad_reordered_int4(void *source, int32_t * out1, int32_t * out2, int32_t * out3, int32_t * out4)
 {
 
 #ifndef ARM_MATH_BIG_ENDIAN
@@ -168,7 +203,7 @@ __STATIC_INLINE void *read_and_pad_reordered_INT4(void *source, int32_t * out1, 
 /**
  * @brief read and expand one INT2 word into two INT16 words with reordering
  */
-__STATIC_INLINE void *read_and_pad_reordered_INT2(  void *source, int32_t * out1, int32_t * out2, int32_t * out3, int32_t * out4,
+__STATIC_INLINE void *read_and_pad_reordered_int2(  void *source, int32_t * out1, int32_t * out2, int32_t * out3, int32_t * out4,
                                                     int32_t * out5, int32_t * out6, int32_t * out7, int32_t * out8)
 {
         q31_t     inA = *__SIMD32(source)++;
@@ -195,6 +230,34 @@ __STATIC_INLINE void *read_and_pad_reordered_INT2(  void *source, int32_t * out1
         return source;
 }
 
+
+/*
+ * @brief read and expand four UINT8 into four INT16 with reordering
+ */
+__STATIC_INLINE void *read_and_pad_reordered_uint8(void *source, int32_t * out1, int32_t * out2)
+{
+		int32_t inA = *__SIMD32(source)++;
+#ifndef ARM_MATH_BIG_ENDIAN
+        *out2 = __UXTB16(__ROR(inA, 8));
+        *out1 = __UXTB16(inA);
+#else
+        *out1 = __UXTB16(__ROR(inA, 8));
+        *out2 = __UXTB16(inA);
+#endif
+
+        return source;
+}
+
+__STATIC_INLINE int32_t __HI_SMULL(int32_t a, int32_t b)
+{
+  int hi = 0;
+  int lo = 0;
+  asm volatile ("SMULL %[lo_out], %[hi_out], %[a_operand], %[b_operand]"
+    : [lo_out] "=&r" (lo), [hi_out] "=&r" (hi)
+    : [a_operand] "r" (a), [b_operand] "r" (b)
+  );
+  return hi;
+}
 
 #endif
 

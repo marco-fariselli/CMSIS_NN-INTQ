@@ -21,7 +21,8 @@
 /* ----------------------------------------------------------------------
  * Project:      CMSIS NN Library - INT-Q extension
  * Title:        arm_int2_to_int16_reordered_no_shift.c
- * Description:  Converts the elements of the INT2 vector to reordered int16 vector without left-shift
+ * Description:  Converts the elements of the INT2 vector
+ *               to reordered int16 vector without left-shift
  *
  * $Date:       09. July 2018
  * $Authors:    Manuele Rusci - manuele.rusci@unibo.it
@@ -44,45 +45,12 @@
  */
 
 /**    
- * @brief Converts the elements of the INT2 vector to reordered INT16 vector without left-shift
+ * @brief Converts the elements of the INT2 vector
+ * to reordered INT16 vector without left-shift
  * @param[in]       *pSrc points to the INT2 input vector    
  * @param[out]      *pDst points to the INT16 output vector   
  * @param[in]       blockSize length of the input vector    
- * @return none.    
- *    
- * @details
- *
- * This function does the INT2 to INT16 expansion with re-ordering 
- *
- * <pre>
- *         | A1 | A2 | A3 | A4 | A5 | A6 | A7 | A8 | A9 | A10 | A11 | A12 | A13 | A14 | A15 | A16 |
- *
- *          0                 7 8                15 16                  23 24                    31
- * </pre>
- *
- * is converted into:
- *
- * <pre>
- *  |       A1       |       A9       |   and  |       A2       |       A10      |      and 
- *
- *   0             15 16            31          0             15 16            31
- *
- *  |       A3       |       A11      |   and  |       A4       |       A12      |      and 
- *
- *   0             15 16            31          0             15 16            31
- *
- *  |       A5       |       A13       |   and  |       A6      |       A14      |      and 
- *
- *   0             15 16            31          0             15 16            31
- *
- *  |       A7       |       A15       |   and  |       A8      |       A16      |
- *
- *   0             15 16            31          0             15 16            31
- * </pre>
- *
- *
- * The expansion of other other operand will follow the same rule so that the end
- * results are the same.
+ * @return none.
  *
  */
 
@@ -174,5 +142,5 @@ void arm_int2_to_int16_reordered_no_shift(const int8_t * pSrc, int16_t * pDst, u
 }
 
 /**    
- *   
+ * @}
  */

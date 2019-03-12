@@ -19,16 +19,14 @@
 
 /* ----------------------------------------------------------------------
  * Project:      CMSIS NN Library - INT-Q extension
- * Title:        arm_convolve_HWC_INT2_fast.c
- * Description:  Fast INT2 version of convolution
+ * Title:        arm_convolve_HWC_int4.c
+ * Description:  INT4 convolution
  *
  * $Date:        09. July 2018
  * $Authors:     Manuele Rusci - manuele.rusci@unibo.it
- *               Alessandro Capotondi - alessandro.capotondi@unibo.it
- *               Francesco Conti - f.conti@unibo.it
+ *               Alessandro Capotondi - alessandro.capotondi@unibo.its
  *
  * Target Processor:  Cortex-M cores
- *
  * -------------------------------------------------------------------- */
 
 #include "arm_math.h"
@@ -44,9 +42,9 @@
  */
 
   /**
-   * @brief Fast INT4 convolution function
+   * @brief INT4 convolution function
    * @param[in]       Im_in       pointer to input tensor
-   * @param[in]       dim_im_in   input tensor dimention
+   * @param[in]       dim_im_in   input tensor dimension
    * @param[in]       ch_im_in    number of input tensor channels
    * @param[in]       wt          pointer to kernel weights
    * @param[in]       ch_im_out   number of filters, i.e., output tensor channels
@@ -71,15 +69,15 @@
    *
    * <b>Input dimension constraints:</b>
    *
-   * ch_im_in is multiple of 16    ( because of the 32-bit read )
+   * ch_im_in is multiple of 8    ( because of the 32-bit read)
    *
    * ch_im_out is multiple of 2    ( because 2x2 mat_mult kernel )
    *
-   * The im2col converts the INT2 tensor input into INT16 column, which is stored in
-   * bufferA. There is reordering happenning during this im2col process with
-   * arm_int2_to_int16_reordered_no_shift.
+   * The im2col converts the INT4 tensor input into INT16 column, which is stored in
+   * bufferA. There is reordering happening during this im2col process with
+   * arm_int4_to_int16_reordered_no_shift. 
    *
-   * The computation kernel arm_nn_mat_mult_kernel_int2_int16_reordered does the
+   * The computation kernel arm_nn_mat_mult_kernel_int4_int16_reordered does the
    * GEMM computation with the reordered columns.
    *
    * To speed-up the determination of the padding condition, we split the
@@ -89,7 +87,7 @@
    */
 
 arm_status
-arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
+arm_convolve_HWC_int4(const int8_t * Im_in,
                          const uint16_t dim_im_in,
                          const uint16_t ch_im_in,
                          const int8_t * wt,
@@ -111,13 +109,12 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
 
     /*
      *  Here we use bufferA as int16_t internally as computation are done with int16_t level
-     *  im2col are done to output in int16_t format from int8_t input
+     *  im2col are done to output in int16_t format from INT4 input
      */
-
     int16_t    *pBuffer = bufferA;
     int8_t     *pOut = Im_out;
 
-    if (ch_im_in % 16 != 0 || ch_im_out % 2 != 0)
+    if (ch_im_in % 8 != 0 || ch_im_out % 2 != 0)
     {
         /* check if the input dimension meets the constraints */
         return ARM_MATH_SIZE_MISMATCH;
@@ -129,7 +126,6 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
      * Middle: i_out_y from padding to dim_im_out-padding-1
      * Bottom: i_out_y from dim_im_out-padding to dim_im_out-1
      */
-
 
 
     /* top part */
@@ -144,35 +140,37 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
                 {
                     if (i_ker_y < 0 || i_ker_y >= dim_im_in || i_ker_x < 0 || i_ker_x >= dim_im_in)
                     {
-                        /* arm_fill_q15(0, pBuffer, ch_im_in); */
                         memset(pBuffer, 0, sizeof(int16_t)*ch_im_in);
                     } else
                     {
-                        arm_int2_to_int16_reordered_no_shift
-                            ((int8_t *) Im_in + (((i_ker_y * dim_im_in + i_ker_x) * ch_im_in) >> 2), pBuffer, ch_im_in);	//FIXME: THE SHIFT in a better form!!!!!
+                        arm_int4_to_int16_reordered_no_shift
+                            ((int8_t *) Im_in + (((i_ker_y * dim_im_in + i_ker_x) * ch_im_in) >> 1), pBuffer, ch_im_in);
                     }
                     pBuffer += ch_im_in ;
                 }
             }
 
+
             if (pBuffer == bufferA + 2 * ch_im_in * dim_kernel * dim_kernel)
             {
                 pOut =
-                    arm_nn_mat_mult_kernel_int2_int16_reordered(wt,
+                    arm_nn_mat_mult_kernel_int4_int16_reordered(wt,
                                                             bufferA,
                                                             ch_im_out,
                                                             ch_im_in * dim_kernel * dim_kernel,
 															pThreshold,
-															pOut);	//FIXME: pout deve diventare un counter per indirizzare sub-byte
+															pOut);	
                 /* counter reset */
                 pBuffer = bufferA;
             }
         }
     }
 
+
     /* middle part, here we also divide the x into left, mid and right */
     for (; i_out_y < dim_im_out - padding; i_out_y++)
     {
+
         /* left part */
         for (i_out_x = 0; i_out_x < padding; i_out_x++)
         {
@@ -187,8 +185,8 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
                         memset(pBuffer, 0, sizeof(int16_t)*ch_im_in);
                     } else
                     {
-                        arm_int2_to_int16_reordered_no_shift
-                            ((int8_t *) Im_in + (((i_ker_y * dim_im_in + i_ker_x) * ch_im_in) >> 2 ),
+                        arm_int4_to_int16_reordered_no_shift
+                            ((int8_t *) Im_in + (((i_ker_y * dim_im_in + i_ker_x) * ch_im_in) >> 1 ),
                             		pBuffer, ch_im_in);
                     }
                     pBuffer += ch_im_in;
@@ -198,7 +196,7 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
             if (pBuffer == bufferA + 2 * ch_im_in * dim_kernel * dim_kernel)
             {
                 pOut =
-                    arm_nn_mat_mult_kernel_int2_int16_reordered(wt,
+                    arm_nn_mat_mult_kernel_int4_int16_reordered(wt,
                                                             bufferA,
                                                             ch_im_out,
                                                             ch_im_in * dim_kernel * dim_kernel,
@@ -208,6 +206,7 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
                 pBuffer = bufferA;
             }
         }
+
 
         /* mid part */
         for (; i_out_x < dim_im_out - padding; i_out_x++)
@@ -215,8 +214,8 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
             /* This part implements the im2col function */
             for (i_ker_y = i_out_y * stride - padding; i_ker_y < i_out_y * stride - padding + dim_kernel; i_ker_y++)
             {
-                arm_int2_to_int16_reordered_no_shift(
-                		(int8_t *) Im_in + (((i_ker_y * dim_im_in + i_out_x *stride - padding) * ch_im_in) >> 2 ),
+                arm_int4_to_int16_reordered_no_shift(
+                		(int8_t *) Im_in + (((i_ker_y * dim_im_in + i_out_x *stride - padding) * ch_im_in) >> 1 ),
                 				pBuffer, ch_im_in * dim_kernel);
                 pBuffer += ch_im_in * dim_kernel;
             }
@@ -224,7 +223,7 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
             if (pBuffer == bufferA + 2 * ch_im_in * dim_kernel * dim_kernel)
             {
                 pOut =
-                    arm_nn_mat_mult_kernel_int2_int16_reordered(wt,
+                    arm_nn_mat_mult_kernel_int4_int16_reordered(wt,
                                                             bufferA,
                                                             ch_im_out,
                                                             ch_im_in * dim_kernel * dim_kernel,
@@ -234,6 +233,8 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
                 pBuffer = bufferA;
             }
         }
+
+
 
         /* right part */
         for (; i_out_x < dim_im_out; i_out_x++)
@@ -249,8 +250,8 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
                         memset(pBuffer, 0, sizeof(int16_t)*ch_im_in);
                     } else
                     {
-                        arm_int2_to_int16_reordered_no_shift
-                            ((int8_t *) Im_in + (((i_ker_y * dim_im_in + i_ker_x) * ch_im_in) >> 2 ),
+                        arm_int4_to_int16_reordered_no_shift
+                            ((int8_t *) Im_in + (((i_ker_y * dim_im_in + i_ker_x) * ch_im_in) >> 1 ),
                             		pBuffer,
                             		ch_im_in);
                     }
@@ -261,7 +262,7 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
             if (pBuffer == bufferA + 2 * ch_im_in * dim_kernel * dim_kernel)
             {
                 pOut =
-                    arm_nn_mat_mult_kernel_int2_int16_reordered(wt,
+                    arm_nn_mat_mult_kernel_int4_int16_reordered(wt,
                                                             bufferA,
                                                             ch_im_out,
                                                             ch_im_in * dim_kernel * dim_kernel,
@@ -271,6 +272,8 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
                 pBuffer = bufferA;
             }
         }
+
+
 
     }
 
@@ -289,8 +292,8 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
                         memset(pBuffer, 0, sizeof(int16_t)*ch_im_in);
                     } else
                     {
-                        arm_int2_to_int16_reordered_no_shift
-                            ((int8_t *) Im_in + (((i_ker_y * dim_im_in + i_ker_x) * ch_im_in) >> 2 ),
+                        arm_int4_to_int16_reordered_no_shift
+                            ((int8_t *) Im_in + (((i_ker_y * dim_im_in + i_ker_x) * ch_im_in) >> 1 ),
                             		pBuffer, ch_im_in);
                     }
                     pBuffer += ch_im_in;
@@ -300,7 +303,7 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
             if (pBuffer == bufferA + 2 * ch_im_in * dim_kernel * dim_kernel)
             {
                 pOut =
-                    arm_nn_mat_mult_kernel_int2_int16_reordered(wt,
+                    arm_nn_mat_mult_kernel_int4_int16_reordered(wt,
                                                             bufferA,
                                                             ch_im_out,
                                                             ch_im_in * dim_kernel * dim_kernel,
@@ -315,9 +318,7 @@ arm_convolve_HWC_INT2_fast(const int8_t * Im_in,
 
 #else
     /* Implementation for Cortex-M0 and Cortex-M3: TO BE COMPLETED */
-    #error "INT2 Convolution Layer not supported"
-
-
+    #error "Symmetric int4 Convolution Layer not supported (yet) on this device"
 #endif                          /* ARM_MATH_DSP */
 
     /* Return to application */

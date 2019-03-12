@@ -20,12 +20,12 @@
 /* ----------------------------------------------------------------------
  * Project:      CMSIS NN Library - INT-Q extension
  * Title:        arm_nn_mat_mult_kernel_int2_int16_reordered.c
- * Description:  Matrix-multiplication function for convolution with reordered columns
+ * Description:  Matrix-multiplication function for
+ *               INT2 x INT16 convolution with reordered column
  *
  * $Date:        09. July 2018
  * $Authors:     Manuele Rusci - manuele.rusci@unibo.it
  *               Alessandro Capotondi - alessandro.capotondi@unibo.it
- *               Francesco Conti - f.conti@unibo.it
  *
  * Target Processor:  Cortex-M cores
  * -------------------------------------------------------------------- */
@@ -70,7 +70,8 @@ static int8_t int2_quant(int16_t input, const int16_t * pThr){
 }
 
   /**
-   * @brief Matrix-multiplication function for convolution with reordered columns
+   * @brief Matrix-multiplication function for INT2 x INT16
+   * convolution with reordered column
    * @param[in]       pA          pointer to operand A
    * @param[in]       pInBuffer   pointer to operand B, always consists of 2 vectors
    * @param[in]       ch_im_out   numRow of A
@@ -121,8 +122,8 @@ int8_t     *arm_nn_mat_mult_kernel_int2_int16_reordered(const int8_t * pA,		    
             int32_t     inA11, inA12, inA13, inA14, inA15, inA16, inA17, inA18;
 			int32_t		inA21, inA22, inA23, inA24, inA25, inA26, inA27, inA28;
 
-            pA = (int8_t *) read_and_pad_reordered_INT2((void *)pA, &inA11, &inA12, &inA13, &inA14, &inA15, &inA16, &inA17, &inA18);
-            pA2 = (int8_t *) read_and_pad_reordered_INT2((void *)pA2, &inA21, &inA22, &inA23, &inA24, &inA25, &inA26, &inA27, &inA28);
+            pA = (int8_t *) read_and_pad_reordered_int2((void *)pA, &inA11, &inA12, &inA13, &inA14, &inA15, &inA16, &inA17, &inA18);
+            pA2 = (int8_t *) read_and_pad_reordered_int2((void *)pA2, &inA21, &inA22, &inA23, &inA24, &inA25, &inA26, &inA27, &inA28);
 
     		int32_t     inB1 = *__SIMD32(pB)++;
     		int32_t     inB2 = *__SIMD32(pB2)++;
@@ -190,12 +191,14 @@ int8_t     *arm_nn_mat_mult_kernel_int2_int16_reordered(const int8_t * pA,		    
             colCnt--;
         }                       
 
+        //FIXME fix the handling of remaining cols
+#if 0
         // check for remaining cols
         colCnt = numCol_A & 0x10;
         if(colCnt)
         {
-            int32_t inA1_32 = *((int32_t)  pA);
-            int32_t inA2_32 = *((int32_t)  pA2);
+            int32_t inA1_32 = *((int32_t *)  pA);
+            int32_t inA2_32 = *((int32_t *)  pA2);
 
             while (colCnt)
             {
@@ -217,8 +220,9 @@ int8_t     *arm_nn_mat_mult_kernel_int2_int16_reordered(const int8_t * pA,		    
 
                 //decrease counter
                 colCnt--;
-            }            
+            }
         }
+#endif
 
         // quantization of convolution accumulators and results compression
         if(i & 0x0002 ) {	//MSB or-ed with LSB, then increment the pointer

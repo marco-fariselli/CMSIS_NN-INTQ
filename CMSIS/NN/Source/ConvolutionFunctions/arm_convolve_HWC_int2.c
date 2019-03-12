@@ -19,13 +19,12 @@
 
 /* ----------------------------------------------------------------------
  * Project:      CMSIS NN Library - INT-Q extension
- * Title:        arm_convolve_HWC_BIN_fast.c
- * Description:  Fast binary version of convolution
+ * Title:        arm_convolve_HWC_int2.c
+ * Description:  INT2 convolution
  *
  * $Date:        09. July 2018
  * $Authors:     Manuele Rusci - manuele.rusci@unibo.it
  *               Alessandro Capotondi - alessandro.capotondi@unibo.it
- *               Francesco Conti - f.conti@unibo.it
  *
  * Target Processor:  Cortex-M cores
  *
@@ -33,10 +32,6 @@
 
 #include "arm_math.h"
 #include "arm_nnfunctions.h"
-
-#define BIN_SIZE(x) ((x)>>3)
-#define BIN_SIZE_INT32(x) ((x)>>5)
-
 
 /**
  *  @ingroup groupNN
@@ -48,9 +43,9 @@
  */
 
   /**
-   * @brief Fast INT8 convolution function
+   * @brief INT2 convolution function
    * @param[in]       Im_in       pointer to input tensor
-   * @param[in]       dim_im_in   input tensor dimention
+   * @param[in]       dim_im_in   input tensor dimension
    * @param[in]       ch_im_in    number of input tensor channels
    * @param[in]       wt          pointer to kernel weights
    * @param[in]       ch_im_out   number of filters, i.e., output tensor channels
@@ -75,16 +70,16 @@
    *
    * <b>Input dimension constraints:</b>
    *
-   * ch_im_in is multiple of 32    ( because of the 32-bit read )
+   * ch_im_in is multiple of 16    ( because of the 32-bit read )
    *
-   * ch_im_out is multipe of 32    ( bacause of the 32-bit write )
-   * 
-   * These constraints can be relaxed with little overhead.
+   * ch_im_out is multiple of 2    ( because 2x2 mat_mult kernel )
    *
-   * The im2col stores binary values in bufferA. The computation kernel 
-   * arm_nn_mat_mult_kernel_BIN_reordered does the xnor and bit-count 
-   * computation with the reordered columns. Output values are compressed back
-   * into 32-bit arrays by means of thesholding.
+   * The im2col converts the INT2 tensor input into INT16 column, which is stored in
+   * bufferA. There is reordering happenning during this im2col process with
+   * arm_int2_to_int16_reordered_no_shift.
+   *
+   * The computation kernel arm_nn_mat_mult_kernel_int2_int16_reordered does the
+   * GEMM computation with the reordered columns.
    *
    * To speed-up the determination of the padding condition, we split the
    * computation into 3x3 parts, i.e., {top, mid, bottom} X {left, mid, right}.
@@ -92,48 +87,40 @@
    * the data copying performance.
    */
 
-
 arm_status
-arm_convolve_HWC_BIN_fast(const uint32_t * Im_in,
-                          const uint16_t dim_im_in,
-                          const uint16_t ch_im_in,
-                          const uint32_t * wt,
-                          const uint16_t ch_im_out,
-                          const uint16_t dim_kernel,
-                          const uint16_t padding,
-                          const uint16_t stride,
-						              uint8_t * Im_out,
-                          const uint16_t dim_im_out, 
-						              uint32_t * bufferA, 			
-						              const int16_t * pThreshold,
-						              int8_t * bufferB)
+arm_convolve_HWC_int2(const int8_t * Im_in,
+                         const uint16_t dim_im_in,
+                         const uint16_t ch_im_in,
+                         const int8_t * wt,
+                         const uint16_t ch_im_out,
+                         const uint16_t dim_kernel,
+                         const uint16_t padding,
+                         const uint16_t stride,
+                         int8_t * Im_out,
+                         const uint16_t dim_im_out, 
+                         int16_t * bufferA,
+						 const int16_t * pThreshold,
+                         int8_t * bufferB)
 {
 
 #if defined (ARM_MATH_DSP)
     /* Run the following code for Cortex-M4 and Cortex-M7 */
 
-    int16_t   i_out_y, i_out_x, i_ker_y, i_ker_x, i_ch_out;
+    int16_t   i_out_y, i_out_x, i_ker_y, i_ker_x;
 
     /*
      *  Here we use bufferA as int16_t internally as computation are done with int16_t level
      *  im2col are done to output in int16_t format from int8_t input
      */
 
-    uint32_t  *pOut = (uint32_t* )Im_out;
+    int16_t    *pBuffer = bufferA;
+    int8_t     *pOut = Im_out;
 
-    if (ch_im_in % 32 != 0 || ch_im_out % 32 != 0)
+    if (ch_im_in % 16 != 0 || ch_im_out % 2 != 0)
     {
         /* check if the input dimension meets the constraints */
         return ARM_MATH_SIZE_MISMATCH;
     }
-
-    int16_t n_ifeat_block = BIN_SIZE_INT32(ch_im_in);
-    int16_t i_feat;
-    int idx = 0;
-
-    uint32_t * ptr_weight;
-    uint32_t * ptr_input;
-
 
     /*
      *  Here we split the entire matrix into three regions depending on the padding situation
@@ -142,189 +129,184 @@ arm_convolve_HWC_BIN_fast(const uint32_t * Im_in,
      * Bottom: i_out_y from dim_im_out-padding to dim_im_out-1
      */
 
+
+
     /* top part */
     for (i_out_y = 0; i_out_y < padding; i_out_y++)
     {
         for (i_out_x = 0; i_out_x < dim_im_out; i_out_x++)
         {
-            /* This part implements the im2col function to read input data*/
+            /* This part implements the im2col function */
             for (i_ker_y = i_out_y * stride - padding; i_ker_y < i_out_y * stride - padding + dim_kernel; i_ker_y++)
             {
                 for (i_ker_x = i_out_x * stride - padding; i_ker_x < i_out_x * stride - padding + dim_kernel; i_ker_x++)
                 {
-          					if (i_ker_y < 0 || i_ker_y >= dim_im_in || i_ker_x < 0 || i_ker_x >= dim_im_in)
-          					{
-            						for(i_feat=0; i_feat<n_ifeat_block; i_feat++)
-                        {
-            							bufferA[idx++] = 0;
-            						}
-          					} 
-                    else 
+                    if (i_ker_y < 0 || i_ker_y >= dim_im_in || i_ker_x < 0 || i_ker_x >= dim_im_in)
                     {
-            						ptr_input = ((uint32_t *) Im_in + (i_ker_y * dim_im_in + i_ker_x) * n_ifeat_block); //offset multiple of 32 bits
-            						for(i_feat=0; i_feat<n_ifeat_block; i_feat++)
-                        {
-            							bufferA[idx++] = ptr_input[i_feat];
-            						}
-          					}
-
+                        /* arm_fill_q15(0, pBuffer, ch_im_in); */
+                        memset(pBuffer, 0, sizeof(int16_t)*ch_im_in);
+                    } else
+                    {
+                        arm_int2_to_int16_reordered_no_shift
+                            ((int8_t *) Im_in + (((i_ker_y * dim_im_in + i_ker_x) * ch_im_in) >> 2), pBuffer, ch_im_in);
+                    }
+                    pBuffer += ch_im_in ;
                 }
             }
 
-            if(idx == 2*n_ifeat_block*dim_kernel*dim_kernel ){
-            	idx = 0;
-            	pOut = arm_nn_mat_mult_kernel_BIN_reordered(wt,
-                                                          bufferA,
-                                                          ch_im_out,
-                                                          ch_im_in * dim_kernel * dim_kernel,
-  												                                pThreshold,
-  												                                pOut);
+            if (pBuffer == bufferA + 2 * ch_im_in * dim_kernel * dim_kernel)
+            {
+                pOut =
+                    arm_nn_mat_mult_kernel_int2_int16_reordered(wt,
+                                                            bufferA,
+                                                            ch_im_out,
+                                                            ch_im_in * dim_kernel * dim_kernel,
+															pThreshold,
+															pOut);
+                /* counter reset */
+                pBuffer = bufferA;
             }
-
         }
     }
 
     /* middle part, here we also divide the x into left, mid and right */
     for (; i_out_y < dim_im_out - padding; i_out_y++)
     {
-
         /* left part */
         for (i_out_x = 0; i_out_x < padding; i_out_x++)
         {
             /* This part implements the im2col function */
             for (i_ker_y = i_out_y * stride - padding; i_ker_y < i_out_y * stride - padding + dim_kernel; i_ker_y++)
             {
-        				for (i_ker_x = i_out_x * stride - padding; i_ker_x < i_out_x * stride - padding + dim_kernel; i_ker_x++)
-        				{
-          					if (i_ker_x < 0 || i_ker_x >= dim_im_in)
-          					{
-            						for(i_feat=0; i_feat<n_ifeat_block; i_feat++)
-                        {
-            							 bufferA[idx++] = 0;
-            						}
-          					} 
-                    else 
+                for (i_ker_x = i_out_x * stride - padding; i_ker_x < i_out_x * stride - padding + dim_kernel; i_ker_x++)
+                {
+                    if (i_ker_x < 0 || i_ker_x >= dim_im_in)
                     {
-            						ptr_input = ((uint32_t *) Im_in  + (i_ker_y * dim_im_in + i_ker_x) * n_ifeat_block);
-            						for(i_feat=0; i_feat<n_ifeat_block; i_feat++)
-                        {
-            							 bufferA[idx++] = ptr_input[i_feat];
-            						}
-          					}
-        				}
+                        /* arm_fill_q15(0, pBuffer, ch_im_in); */
+                        memset(pBuffer, 0, sizeof(int16_t)*ch_im_in);
+                    } else
+                    {
+                        arm_int2_to_int16_reordered_no_shift
+                            ((int8_t *) Im_in + (((i_ker_y * dim_im_in + i_ker_x) * ch_im_in) >> 2 ),
+                            		pBuffer, ch_im_in);
+                    }
+                    pBuffer += ch_im_in;
+                }
             }
 
-            if(idx == 2*n_ifeat_block*dim_kernel*dim_kernel )
+            if (pBuffer == bufferA + 2 * ch_im_in * dim_kernel * dim_kernel)
             {
-              	idx = 0;
-              	pOut = arm_nn_mat_mult_kernel_BIN_reordered(wt,
+                pOut =
+                    arm_nn_mat_mult_kernel_int2_int16_reordered(wt,
                                                             bufferA,
                                                             ch_im_out,
                                                             ch_im_in * dim_kernel * dim_kernel,
-                                														pThreshold,
-                                														pOut);
+															pThreshold,
+															pOut);
+                /* counter reset */
+                pBuffer = bufferA;
             }
         }
 
         /* mid part */
         for (; i_out_x < dim_im_out - padding; i_out_x++)
         {
+            /* This part implements the im2col function */
             for (i_ker_y = i_out_y * stride - padding; i_ker_y < i_out_y * stride - padding + dim_kernel; i_ker_y++)
             {
-        				ptr_input = ((uint32_t *) Im_in  + (i_ker_y*dim_im_in+i_out_x*stride-padding)*n_ifeat_block);
-        				for(i_feat=0; i_feat<n_ifeat_block* dim_kernel; i_feat++)
-                {
-        				  	bufferA[idx++] = ptr_input[i_feat];
-        				}
+                arm_int2_to_int16_reordered_no_shift(
+                		(int8_t *) Im_in + (((i_ker_y * dim_im_in + i_out_x *stride - padding) * ch_im_in) >> 2 ),
+                				pBuffer, ch_im_in * dim_kernel);
+                pBuffer += ch_im_in * dim_kernel;
             }
 
-            if(idx == 2*n_ifeat_block*dim_kernel*dim_kernel )
+            if (pBuffer == bufferA + 2 * ch_im_in * dim_kernel * dim_kernel)
             {
-              	idx = 0;
-             	  pOut = arm_nn_mat_mult_kernel_BIN_reordered(wt,
+                pOut =
+                    arm_nn_mat_mult_kernel_int2_int16_reordered(wt,
                                                             bufferA,
                                                             ch_im_out,
                                                             ch_im_in * dim_kernel * dim_kernel,
-                                														pThreshold,
-                                														pOut);
+															pThreshold,
+															pOut);
+                /* counter reset */
+                pBuffer = bufferA;
             }
         }
-
 
         /* right part */
         for (; i_out_x < dim_im_out; i_out_x++)
         {
+            /* This part implements the im2col function */
             for (i_ker_y = i_out_y * stride - padding; i_ker_y < i_out_y * stride - padding + dim_kernel; i_ker_y++)
             {
-        				for (i_ker_x = i_out_x * stride - padding; i_ker_x < i_out_x * stride - padding + dim_kernel; i_ker_x++)
-        				{
-          					if (i_ker_x < 0 || i_ker_x >= dim_im_in)
-          					{
-            						for(i_feat=0; i_feat<n_ifeat_block; i_feat++)
-                        {
-            						    bufferA[idx++] = 0;
-            						}
-          					} 
-                    else 
+                for (i_ker_x = i_out_x * stride - padding; i_ker_x < i_out_x * stride - padding + dim_kernel; i_ker_x++)
+                {
+                    if (i_ker_x < 0 || i_ker_x >= dim_im_in)
                     {
-          						  ptr_input = ((uint32_t *) Im_in  + (i_ker_y * dim_im_in + i_ker_x) * n_ifeat_block);
-          						  for(i_feat=0; i_feat<n_ifeat_block; i_feat++)
-                        {
-          							    bufferA[idx++] = ptr_input[i_feat];
-          						  }
-          					}
-        				}
+                        /* arm_fill_q15(0, pBuffer, ch_im_in); */
+                        memset(pBuffer, 0, sizeof(int16_t)*ch_im_in);
+                    } else
+                    {
+                        arm_int2_to_int16_reordered_no_shift
+                            ((int8_t *) Im_in + (((i_ker_y * dim_im_in + i_ker_x) * ch_im_in) >> 2 ),
+                            		pBuffer,
+                            		ch_im_in);
+                    }
+                    pBuffer += ch_im_in;
+                }
             }
 
-            if(idx == 2*n_ifeat_block*dim_kernel*dim_kernel )
+            if (pBuffer == bufferA + 2 * ch_im_in * dim_kernel * dim_kernel)
             {
-              	idx = 0;
-              	pOut = arm_nn_mat_mult_kernel_BIN_reordered(wt,
+                pOut =
+                    arm_nn_mat_mult_kernel_int2_int16_reordered(wt,
                                                             bufferA,
                                                             ch_im_out,
                                                             ch_im_in * dim_kernel * dim_kernel,
-                                														pThreshold,
-                                														pOut);
+															pThreshold,
+															pOut);
+                /* counter reset */
+                pBuffer = bufferA;
             }
         }
+
     }
 
-    /* bottom part */
     for (; i_out_y < dim_im_out; i_out_y++)
     {
         for (i_out_x = 0; i_out_x < dim_im_out; i_out_x++)
         {
+            /* This part implements the im2col function */
             for (i_ker_y = i_out_y * stride - padding; i_ker_y < i_out_y * stride - padding + dim_kernel; i_ker_y++)
             {
-    				for (i_ker_x = i_out_x * stride - padding; i_ker_x < i_out_x * stride - padding + dim_kernel; i_ker_x++)
-    				{
-      					if (i_ker_y < 0 || i_ker_y >= dim_im_in || i_ker_x < 0 || i_ker_x >= dim_im_in)
-      					{
-        						for(i_feat=0; i_feat<n_ifeat_block; i_feat++)
-                    {
-        						    bufferA[idx++] = 0;
-        						}
-      					} 
-                else 
+                for (i_ker_x = i_out_x * stride - padding; i_ker_x < i_out_x * stride - padding + dim_kernel; i_ker_x++)
                 {
-        						ptr_input = ((uint32_t *) Im_in + (i_ker_y * dim_im_in + i_ker_x) * n_ifeat_block);
-        						for(i_feat=0; i_feat<n_ifeat_block; i_feat++)
+                    if (i_ker_y < 0 || i_ker_y >= dim_im_in || i_ker_x < 0 || i_ker_x >= dim_im_in)
                     {
-        						    bufferA[idx++] = ptr_input[i_feat];
-        						}
-      					}
-    				}
+                        /* arm_fill_q15(0, pBuffer, ch_im_in); */
+                        memset(pBuffer, 0, sizeof(int16_t)*ch_im_in);
+                    } else
+                    {
+                        arm_int2_to_int16_reordered_no_shift
+                            ((int8_t *) Im_in + (((i_ker_y * dim_im_in + i_ker_x) * ch_im_in) >> 2 ),
+                            		pBuffer, ch_im_in);
+                    }
+                    pBuffer += ch_im_in;
+                }
             }
 
-            if(idx == 2*n_ifeat_block*dim_kernel*dim_kernel )
+            if (pBuffer == bufferA + 2 * ch_im_in * dim_kernel * dim_kernel)
             {
-              	idx = 0;
-              	pOut = arm_nn_mat_mult_kernel_BIN_reordered(wt,
+                pOut =
+                    arm_nn_mat_mult_kernel_int2_int16_reordered(wt,
                                                             bufferA,
                                                             ch_im_out,
                                                             ch_im_in * dim_kernel * dim_kernel,
-  														                              pThreshold,
-  														                              pOut);
+															pThreshold,
+															pOut);
+                /* counter reset */
+                pBuffer = bufferA;
             }
         }
     }
@@ -332,8 +314,7 @@ arm_convolve_HWC_BIN_fast(const uint32_t * Im_in,
 
 #else
     /* Implementation for Cortex-M0 and Cortex-M3: TO BE COMPLETED */
-    #error "Binary Convolution Layer not supported"
-
+	#error "Symmetric int2 Convolution Layer not supported (yet) on this device"
 #endif                          /* ARM_MATH_DSP */
 
     /* Return to application */
