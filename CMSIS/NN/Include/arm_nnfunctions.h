@@ -803,7 +803,7 @@ extern    "C"
                                                       q15_t * vec_buffer);
 
 	/**
-	 * @brief uint8 asymmetric opt fully-connected layer function
+	 * @brief Asymmetric UINT8 fully-connected layer function
 	 * @param[in]       pV          pointer to input vector
 	 * @param[in]       pM          pointer to matrix weights
 	 * @param[in]       dim_vec     length of the vector
@@ -819,7 +819,7 @@ extern    "C"
 	 * @return     The function returns <code>ARM_MATH_SUCCESS</code>
 	 *
 	 */
-    arm_status arm_fully_connected_uint8_asym(const uint8_t * pV,
+    arm_status arm_fully_connected_asym_uint8(const uint8_t * pV,
                                const uint8_t * pM,
                                const uint16_t dim_vec,
                                const uint16_t num_of_rows,

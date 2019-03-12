@@ -71,7 +71,7 @@
    */
 
 arm_status
-arm_fully_connected_uint8_asym(const uint8_t * pV,
+arm_fully_connected_asym_uint8(const uint8_t * pV,
                            	   	   const uint8_t * pM,
 								   const uint16_t dim_vec,
 								   const uint16_t num_of_rows,
