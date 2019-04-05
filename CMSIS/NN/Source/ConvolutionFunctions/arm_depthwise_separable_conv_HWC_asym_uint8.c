@@ -133,6 +133,7 @@ arm_status arm_depthwise_separable_conv_HWC_asym_uint8(const uint8_t * Im_in,
                     {
                         memset(pBuffer, 0, ch_im_in);
 
+
                     } else
                     {
                         memcpy(pBuffer, Im_in + (i_ker_y * dim_im_in + i_ker_x) * ch_im_in, ch_im_in);
@@ -148,10 +149,10 @@ arm_status arm_depthwise_separable_conv_HWC_asym_uint8(const uint8_t * Im_in,
 
             while (rowCnt)
             {
-            	int32_t     sum =  (q31_t)(*pBias++);
-            	int32_t     sum2 = (q31_t)(*pBias++);
-            	int32_t     sum3 = (q31_t)(*pBias++);
-            	int32_t     sum4 = (q31_t)(*pBias++);
+            	int32_t     sum =  *pBias++;
+            	int32_t     sum2 = *pBias++;
+            	int32_t     sum3 = *pBias++;
+            	int32_t     sum4 = *pBias++;
 
                 uint16_t    colCnt = (dim_kernel * dim_kernel) >> 1;
                 uint8_t     *pB = colBuffer + row_shift;
@@ -177,37 +178,68 @@ arm_status arm_depthwise_separable_conv_HWC_asym_uint8(const uint8_t * Im_in,
                     inA2 = __PKHTB(opB, inA1, 16);
                     inA1 = __PKHBT(inA1, opB, 16);
 
-                    //sum
-                    opA = __UXTB16(inA1);
-                    opB = __UXTB16(inB1);
+                    if(z_in){
+                    	//sum
+						opA = __UXTB16(inA1);
+						opB = __UXTB16(inB1);
 
-                    opA = __SSUB16(opA, inz_wt);
-                    opB = __SSUB16(opB, inz_in);
-                    sum = __SMLAD(opA, opB, sum);
+						opA = __SSUB16(opA, inz_wt);
+						opB = __SSUB16(opB, inz_in);
+						sum = __SMLAD(opA, opB, sum);
 
-                    //sum2
-                    opA = __UXTB16(__ROR(inA1, 8));
-                    opB = __UXTB16(__ROR(inB1, 8));
+						//sum2
+						opA = __UXTB16(__ROR(inA1, 8));
+						opB = __UXTB16(__ROR(inB1, 8));
 
-                    opA = __SSUB16(opA, inz_wt);
-					opB = __SSUB16(opB, inz_in);
-                    sum2 = __SMLAD(opA, opB, sum2);
+						opA = __SSUB16(opA, inz_wt);
+						opB = __SSUB16(opB, inz_in);
+						sum2 = __SMLAD(opA, opB, sum2);
 
-                    //sum3
-                    opA = __UXTB16(inA2);
-                    opB = __UXTB16(inB2);
+						//sum3
+						opA = __UXTB16(inA2);
+						opB = __UXTB16(inB2);
 
-                    opA = __SSUB16(opA, inz_wt);
-					opB = __SSUB16(opB, inz_in);
-                    sum3 = __SMLAD(opA, opB, sum3);
+						opA = __SSUB16(opA, inz_wt);
+						opB = __SSUB16(opB, inz_in);
+						sum3 = __SMLAD(opA, opB, sum3);
 
-                    //sum4
-                    opA = __UXTB16(__ROR(inA2, 8));
-                    opB = __UXTB16(__ROR(inB2, 8));
+						//sum4
+						opA = __UXTB16(__ROR(inA2, 8));
+						opB = __UXTB16(__ROR(inB2, 8));
 
-                    opA = __SSUB16(opA, inz_wt);
-					opB = __SSUB16(opB, inz_in);
-                    sum4 = __SMLAD(opA, opB, sum4);
+						opA = __SSUB16(opA, inz_wt);
+						opB = __SSUB16(opB, inz_in);
+						sum4 = __SMLAD(opA, opB, sum4);
+                	}
+                	else {
+                    	//sum
+						opA = __UXTB16(inA1);
+						opB = __UXTB16(inB1);
+
+						opA = __SSUB16(opA, inz_wt);
+						sum = __SMLAD(opA, opB, sum);
+
+						//sum2
+						opA = __UXTB16(__ROR(inA1, 8));
+						opB = __UXTB16(__ROR(inB1, 8));
+
+						opA = __SSUB16(opA, inz_wt);
+						sum2 = __SMLAD(opA, opB, sum2);
+
+						//sum3
+						opA = __UXTB16(inA2);
+						opB = __UXTB16(inB2);
+
+						opA = __SSUB16(opA, inz_wt);
+						sum3 = __SMLAD(opA, opB, sum3);
+
+						//sum4
+						opA = __UXTB16(__ROR(inA2, 8));
+						opB = __UXTB16(__ROR(inB2, 8));
+
+						opA = __SSUB16(opA, inz_wt);
+						sum4 = __SMLAD(opA, opB, sum4);
+					}
                     colCnt--;
                 }
 #else

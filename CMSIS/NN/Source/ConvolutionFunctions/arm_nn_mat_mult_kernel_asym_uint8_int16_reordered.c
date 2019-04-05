@@ -75,20 +75,33 @@ uint8_t *arm_nn_mat_mult_kernel_asym_uint8_int16_reordered(const uint8_t * pA,
 	const int16_t *pzA = VzA;
 	int32_t inzA = *__SIMD32(pzA);
 
+    /* setup pointers for B */
+    const int16_t *pB = pInBuffer;
+    const int16_t *pB2 = pB + numCol_A;
+    int32_t w_offset  = 0;
+	int32_t w_offset2 = 0;
+
+    for (i = 0; i < numCol_A; i+=2){
+    	int32_t inB1 = *__SIMD32(pB)++;
+    	int32_t inB2 = *__SIMD32(pB2)++;
+    	w_offset = __SMLAD(inzA, inB1, w_offset);
+    	w_offset2 = __SMLAD(inzA, inB2, w_offset2);
+    }
+
     /* this loop over rows in A */
     for (i = 0; i < ch_im_out; i += 2)
     {
         /* setup pointers for B */
-        const int16_t *pB = pInBuffer;
-        const int16_t *pB2 = pB + numCol_A;
+        pB = pInBuffer;
+        pB2 = pB + numCol_A;
 
         /* align the second pointer for A */
         const uint8_t *pA2 = pA + numCol_A;
 
-        int32_t     sum =  bias[i];
-        int32_t     sum2 = bias[i];
-        int32_t     sum3 = bias[i + 1];
-        int32_t     sum4 = bias[i + 1];
+        int32_t     sum =  bias[i] - w_offset;
+        int32_t     sum2 = bias[i] - w_offset2;
+        int32_t     sum3 = bias[i + 1] - w_offset;
+        int32_t     sum4 = bias[i + 1] - w_offset2;
 
         uint16_t  colCnt = numCol_A >> 2;
 
@@ -101,11 +114,6 @@ uint8_t *arm_nn_mat_mult_kernel_asym_uint8_int16_reordered(const uint8_t * pA,
 
             pA = (uint8_t *) read_and_pad_reordered_uint8((void *)pA, &inA11, &inA12);
             pA2 = (uint8_t *) read_and_pad_reordered_uint8((void *)pA2, &inA21, &inA22);
-
-			inA11 = __SSUB16(inA11, inzA);
-			inA12 = __SSUB16(inA12, inzA);
-			inA21 = __SSUB16(inA21, inzA);
-			inA22 = __SSUB16(inA22, inzA);
 
             sum = __SMLAD(inA11, inB1, sum);
             sum2 = __SMLAD(inA11, inB2, sum2);
@@ -132,9 +140,6 @@ uint8_t *arm_nn_mat_mult_kernel_asym_uint8_int16_reordered(const uint8_t * pA,
             int16_t   inB1 = *pB++;
             int16_t   inA2 = (int16_t)*pA2++;
             int16_t   inB2 = *pB2++;
-
-			inA1 = inA1 - VzA[0];
-			inA2 = inA2 - VzA[0];
 
             sum += inA1 * inB1;
             sum2 += inA1 * inB2;
