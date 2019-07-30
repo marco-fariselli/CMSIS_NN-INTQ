@@ -247,7 +247,7 @@ arm_depthwise_separable_conv_HWC_u4_u4_u4_thr(const uint8_t * Im_in,
                 uint8_t qsum2 = __int16_to_u4((int16_t) sum2, &thresholds[(ch_out_id++)<<4]);
                 uint8_t qsum3 = __int16_to_u4((int16_t) sum3, &thresholds[(ch_out_id++)<<4]);
                 uint8_t qsum4 = __int16_to_u4((int16_t) sum4, &thresholds[(ch_out_id++)<<4]);
-                
+
                 *pOut++  = ( __USAT(qsum, 4) ) | ( __USAT(qsum2, 4) << 4 );
                 *pOut++  = ( __USAT(qsum3, 4)) | ( __USAT(qsum4, 4) << 4 );
 
@@ -294,7 +294,7 @@ arm_depthwise_separable_conv_HWC_u4_u4_u4_thr(const uint8_t * Im_in,
                 /* Thresholds (u4 output)*/
                 uint8_t qsum = __int16_to_u4((int16_t) sum, &thresholds[(ch_out_id++)<<4]);
                 switch(row_per_byte_out){
-                    case 2:                
+                    case 2:
                         *pOut  = ( __USAT(qsum,4));
                         row_per_byte_out--;
                         break;

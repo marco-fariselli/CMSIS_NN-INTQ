@@ -112,7 +112,7 @@ ${config.fn_name}(const uint8_t * Im_in,
                          const uint8_t z_out,
     % if config.folding=="icn":
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
     % else:
                          const int32_t m_zero,
                          const uint8_t n_zero,
@@ -415,7 +415,7 @@ ${config.fn_name}(const uint8_t * Im_in,
                     inA.bytes[1] = (uint8_t) __USAT(__ROR(tmp_inA, 2), 2);
                     inA.bytes[2] = (uint8_t) __USAT(__ROR(tmp_inA, 4), 2);
                     inA.bytes[3] = (uint8_t) __USAT(__ROR(tmp_inA, 6), 2);
-%endif                    
+%endif
                     inB.word = *__SIMD32(pB);
                     pB += ch_im_in;
 % if config.quantization=="PACT_CH":
@@ -466,7 +466,7 @@ ${config.fn_name}(const uint8_t * Im_in,
                 uint8_t qsum2 = __int16_to_u4((int16_t) sum2, &thresholds[(ch_out_id++)<<4]);
                 uint8_t qsum3 = __int16_to_u4((int16_t) sum3, &thresholds[(ch_out_id++)<<4]);
                 uint8_t qsum4 = __int16_to_u4((int16_t) sum4, &thresholds[(ch_out_id++)<<4]);
-                
+
                 *pOut++  = ( __USAT(qsum, 4) ) | ( __USAT(qsum2, 4) << 4 );
                 *pOut++  = ( __USAT(qsum3, 4)) | ( __USAT(qsum4, 4) << 4 );
 
@@ -626,7 +626,7 @@ ${config.fn_name}(const uint8_t * Im_in,
                 /* Thresholds (u4 output)*/
                 uint8_t qsum = __int16_to_u4((int16_t) sum, &thresholds[(ch_out_id++)<<4]);
                 switch(row_per_byte_out){
-                    case 2:                
+                    case 2:
                         *pOut  = ( __USAT(qsum,4));
                         row_per_byte_out--;
                         break;
@@ -646,7 +646,7 @@ ${config.fn_name}(const uint8_t * Im_in,
         % endif
                 /* Store Outputs (u4 output) */
                 switch(row_per_byte_out){
-                    case 2:                
+                    case 2:
                         *pOut  = ( __USAT(sum, 4) );
                         row_per_byte_out--;
                         break;
@@ -671,7 +671,7 @@ ${config.fn_name}(const uint8_t * Im_in,
                     case 3:
                         *pOut |= ( __USAT(qsum, 2) << 2);
                         row_per_byte_out--;
-                        break;                    
+                        break;
                     case 2:
                         *pOut |= ( __USAT(qsum, 2) << 4);
                         row_per_byte_out--;
@@ -692,15 +692,15 @@ ${config.fn_name}(const uint8_t * Im_in,
         % endif
                 /* Store Outputs (u4 output) */
                 switch(row_per_byte_out){
-                    case 4:                
+                    case 4:
                         *pOut  = ( __USAT(sum, 2) );
                         row_per_byte_out--;
                         break;
                     case 3:
                         *pOut |= ( __USAT(sum, 2) << 2);
                         row_per_byte_out--;
-                        break;                    
-                    case 2:                
+                        break;
+                    case 2:
                         *pOut |= ( __USAT(sum, 2) << 4);
                         row_per_byte_out--;
                         break;
@@ -725,7 +725,7 @@ ${config.fn_name}(const uint8_t * Im_in,
                     row_per_byte=4;
                     row_shift_wt++;
                 }
-% endif                
+% endif
             }
 
             /* clear counter and pointers */

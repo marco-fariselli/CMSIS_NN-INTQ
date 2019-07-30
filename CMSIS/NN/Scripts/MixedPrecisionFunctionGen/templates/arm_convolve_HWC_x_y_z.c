@@ -111,7 +111,7 @@ ${config.fn_name}(const uint8_t * Im_in,
                          const uint8_t z_out,
     % if config.folding=="icn":
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
     % else:
                          const int32_t m_zero,
                          const uint8_t n_zero,

@@ -84,7 +84,7 @@ uint8_t *${config.fn_name}(const uint8_t * pA,
 % elif config.folding=="icn":
 												  const uint8_t z_out,
 												  const int32_t *m_zero,
-												  const uint8_t *n_zero)
+												  const int8_t *n_zero)
 % else:
                                                   const uint8_t z_out,
     											  const int32_t m_zero,
@@ -306,8 +306,8 @@ uint8_t *${config.fn_name}(const uint8_t * pA,
         /* icn (u8 output) */
         sum  = ((__HI_SMULL(sum,m_zero[i])) >> n_zero[i]) + z_out;
         sum2 = ((__HI_SMULL(sum2,m_zero[i])) >> n_zero[i]) + z_out;
-        sum3 = ((__HI_SMULL(sum3,m_zero[i])) >> n_zero[i]) + z_out;
-        sum4 = ((__HI_SMULL(sum4,m_zero[i])) >> n_zero[i]) + z_out;
+        sum3 = ((__HI_SMULL(sum3,m_zero[i+1])) >> n_zero[i+1]) + z_out;
+        sum4 = ((__HI_SMULL(sum4,m_zero[i+1])) >> n_zero[i+1]) + z_out;
         % else:
 
         /* PACT+FW (u8 output) */
@@ -341,8 +341,8 @@ uint8_t *${config.fn_name}(const uint8_t * pA,
         /* icn (u4 output) */
         sum  = ((__HI_SMULL(sum,m_zero[i])) >> n_zero[i]) + z_out;
         sum2 = ((__HI_SMULL(sum2,m_zero[i])) >> n_zero[i]) + z_out;
-        sum3 = ((__HI_SMULL(sum3,m_zero[i])) >> n_zero[i]) + z_out;
-        sum4 = ((__HI_SMULL(sum4,m_zero[i])) >> n_zero[i]) + z_out;
+        sum3 = ((__HI_SMULL(sum3,m_zero[i+1])) >> n_zero[i+1]) + z_out;
+        sum4 = ((__HI_SMULL(sum4,m_zero[i+1])) >> n_zero[i+1]) + z_out;
         % else:
 
         /* icn per-layer (u4 output) */
@@ -384,8 +384,8 @@ uint8_t *${config.fn_name}(const uint8_t * pA,
         /* icn (u2 output) */
         sum  = ((__HI_SMULL(sum,m_zero[i])) >> n_zero[i]) + z_out;
         sum2 = ((__HI_SMULL(sum2,m_zero[i])) >> n_zero[i]) + z_out;
-        sum3 = ((__HI_SMULL(sum3,m_zero[i])) >> n_zero[i]) + z_out;
-        sum4 = ((__HI_SMULL(sum4,m_zero[i])) >> n_zero[i]) + z_out;
+        sum3 = ((__HI_SMULL(sum3,m_zero[i+1])) >> n_zero[i+1]) + z_out;
+        sum4 = ((__HI_SMULL(sum4,m_zero[i+1])) >> n_zero[i+1]) + z_out;
         % else:
 
         /* icn per-layer (u2 output) */

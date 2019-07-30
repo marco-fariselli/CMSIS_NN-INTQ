@@ -65,7 +65,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u8_int16_u4_icn(const uint8_t * pA,
                                                   const uint8_t z_a,
 												  const uint8_t z_out,
 												  const int32_t *m_zero,
-												  const uint8_t *n_zero)
+												  const int8_t *n_zero)
 {
 
 #if defined (ARM_MATH_DSP)

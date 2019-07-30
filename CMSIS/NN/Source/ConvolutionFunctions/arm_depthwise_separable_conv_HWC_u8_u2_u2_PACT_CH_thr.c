@@ -306,7 +306,7 @@ arm_depthwise_separable_conv_HWC_u8_u2_u2_PACT_CH_thr(const uint8_t * Im_in,
                     case 3:
                         *pOut |= ( __USAT(qsum, 2) << 2);
                         row_per_byte_out--;
-                        break;                    
+                        break;
                     case 2:
                         *pOut |= ( __USAT(qsum, 2) << 4);
                         row_per_byte_out--;

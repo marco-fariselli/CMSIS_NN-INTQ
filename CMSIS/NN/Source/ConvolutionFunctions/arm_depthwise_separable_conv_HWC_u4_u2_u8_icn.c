@@ -92,7 +92,7 @@ arm_depthwise_separable_conv_HWC_u4_u2_u8_icn(const uint8_t * Im_in,
 						 const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
 						 int16_t * bufferA,
 						 uint8_t * bufferB)
 {
@@ -279,15 +279,15 @@ arm_depthwise_separable_conv_HWC_u4_u2_u8_icn(const uint8_t * Im_in,
                 sum  = ((__HI_SMULL(sum,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
                 /* Store Outputs (u4 output) */
                 switch(row_per_byte_out){
-                    case 4:                
+                    case 4:
                         *pOut  = ( __USAT(sum, 2) );
                         row_per_byte_out--;
                         break;
                     case 3:
                         *pOut |= ( __USAT(sum, 2) << 2);
                         row_per_byte_out--;
-                        break;                    
-                    case 2:                
+                        break;
+                    case 2:
                         *pOut |= ( __USAT(sum, 2) << 4);
                         row_per_byte_out--;
                         break;

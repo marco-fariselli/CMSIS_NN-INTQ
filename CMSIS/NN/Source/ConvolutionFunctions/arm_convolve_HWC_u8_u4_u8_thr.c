@@ -21,7 +21,7 @@
  * Project:      CMSIS NN Library - Mixed Precision INT-Q
  * Title:        arm_convolve_HWC_u8_u4_u8_thr.c
  * Description:  Mixed Precision Convolutional function that uses u8
- *               activations, u8 weights and produce u8
+ *               activations, u8 weights and produce u4
  *               output activations. Outputs are quantized using thr
  *               folding technique.
  *

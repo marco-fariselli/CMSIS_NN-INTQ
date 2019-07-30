@@ -1160,7 +1160,7 @@ arm_convolve_HWC_u8_u8_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -1258,7 +1258,7 @@ arm_convolve_HWC_u8_u8_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -1407,7 +1407,7 @@ arm_convolve_HWC_u8_u8_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -1505,7 +1505,7 @@ arm_convolve_HWC_u8_u8_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -1654,7 +1654,7 @@ arm_convolve_HWC_u8_u8_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -1752,7 +1752,7 @@ arm_convolve_HWC_u8_u8_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -1901,7 +1901,7 @@ arm_convolve_HWC_u8_u4_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -1999,7 +1999,7 @@ arm_convolve_HWC_u8_u4_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -2148,7 +2148,7 @@ arm_convolve_HWC_u8_u4_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -2246,7 +2246,7 @@ arm_convolve_HWC_u8_u4_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -2395,7 +2395,7 @@ arm_convolve_HWC_u8_u4_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -2493,7 +2493,7 @@ arm_convolve_HWC_u8_u4_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -2642,7 +2642,7 @@ arm_convolve_HWC_u8_u2_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -2740,7 +2740,7 @@ arm_convolve_HWC_u8_u2_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -2889,7 +2889,7 @@ arm_convolve_HWC_u8_u2_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -2987,7 +2987,7 @@ arm_convolve_HWC_u8_u2_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -3136,7 +3136,7 @@ arm_convolve_HWC_u8_u2_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -3234,7 +3234,7 @@ arm_convolve_HWC_u8_u2_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -3383,7 +3383,7 @@ arm_convolve_HWC_u4_u8_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -3481,7 +3481,7 @@ arm_convolve_HWC_u4_u8_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -3630,7 +3630,7 @@ arm_convolve_HWC_u4_u8_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -3728,7 +3728,7 @@ arm_convolve_HWC_u4_u8_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -3877,7 +3877,7 @@ arm_convolve_HWC_u4_u8_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -3975,7 +3975,7 @@ arm_convolve_HWC_u4_u8_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -4124,7 +4124,7 @@ arm_convolve_HWC_u4_u4_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -4222,7 +4222,7 @@ arm_convolve_HWC_u4_u4_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -4371,7 +4371,7 @@ arm_convolve_HWC_u4_u4_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -4469,7 +4469,7 @@ arm_convolve_HWC_u4_u4_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -4618,7 +4618,7 @@ arm_convolve_HWC_u4_u4_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -4716,7 +4716,7 @@ arm_convolve_HWC_u4_u4_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -4865,7 +4865,7 @@ arm_convolve_HWC_u4_u2_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -4963,7 +4963,7 @@ arm_convolve_HWC_u4_u2_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -5112,7 +5112,7 @@ arm_convolve_HWC_u4_u2_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -5210,7 +5210,7 @@ arm_convolve_HWC_u4_u2_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -5359,7 +5359,7 @@ arm_convolve_HWC_u4_u2_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -5457,7 +5457,7 @@ arm_convolve_HWC_u4_u2_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -5606,7 +5606,7 @@ arm_convolve_HWC_u2_u8_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -5704,7 +5704,7 @@ arm_convolve_HWC_u2_u8_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -5853,7 +5853,7 @@ arm_convolve_HWC_u2_u8_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -5951,7 +5951,7 @@ arm_convolve_HWC_u2_u8_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -6100,7 +6100,7 @@ arm_convolve_HWC_u2_u8_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -6198,7 +6198,7 @@ arm_convolve_HWC_u2_u8_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -6347,7 +6347,7 @@ arm_convolve_HWC_u2_u4_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -6445,7 +6445,7 @@ arm_convolve_HWC_u2_u4_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -6594,7 +6594,7 @@ arm_convolve_HWC_u2_u4_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -6692,7 +6692,7 @@ arm_convolve_HWC_u2_u4_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -6841,7 +6841,7 @@ arm_convolve_HWC_u2_u4_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -6939,7 +6939,7 @@ arm_convolve_HWC_u2_u4_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -7088,7 +7088,7 @@ arm_convolve_HWC_u2_u2_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -7186,7 +7186,7 @@ arm_convolve_HWC_u2_u2_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -7335,7 +7335,7 @@ arm_convolve_HWC_u2_u2_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -7433,7 +7433,7 @@ arm_convolve_HWC_u2_u2_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -7582,7 +7582,7 @@ arm_convolve_HWC_u2_u2_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -7680,7 +7680,7 @@ arm_convolve_HWC_u2_u2_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -7832,7 +7832,7 @@ arm_depthwise_separable_conv_HWC_u8_u8_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -7932,7 +7932,7 @@ arm_depthwise_separable_conv_HWC_u8_u8_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -8084,7 +8084,7 @@ arm_depthwise_separable_conv_HWC_u8_u8_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -8184,7 +8184,7 @@ arm_depthwise_separable_conv_HWC_u8_u8_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -8336,7 +8336,7 @@ arm_depthwise_separable_conv_HWC_u8_u8_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -8436,7 +8436,7 @@ arm_depthwise_separable_conv_HWC_u8_u8_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -8588,7 +8588,7 @@ arm_depthwise_separable_conv_HWC_u8_u4_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -8688,7 +8688,7 @@ arm_depthwise_separable_conv_HWC_u8_u4_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -8840,7 +8840,7 @@ arm_depthwise_separable_conv_HWC_u8_u4_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -8940,7 +8940,7 @@ arm_depthwise_separable_conv_HWC_u8_u4_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -9092,7 +9092,7 @@ arm_depthwise_separable_conv_HWC_u8_u4_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -9192,7 +9192,7 @@ arm_depthwise_separable_conv_HWC_u8_u4_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -9344,7 +9344,7 @@ arm_depthwise_separable_conv_HWC_u8_u2_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -9444,7 +9444,7 @@ arm_depthwise_separable_conv_HWC_u8_u2_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -9596,7 +9596,7 @@ arm_depthwise_separable_conv_HWC_u8_u2_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -9696,7 +9696,7 @@ arm_depthwise_separable_conv_HWC_u8_u2_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -9848,7 +9848,7 @@ arm_depthwise_separable_conv_HWC_u8_u2_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -9948,7 +9948,7 @@ arm_depthwise_separable_conv_HWC_u8_u2_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -10100,7 +10100,7 @@ arm_depthwise_separable_conv_HWC_u4_u8_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -10200,7 +10200,7 @@ arm_depthwise_separable_conv_HWC_u4_u8_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -10352,7 +10352,7 @@ arm_depthwise_separable_conv_HWC_u4_u8_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -10452,7 +10452,7 @@ arm_depthwise_separable_conv_HWC_u4_u8_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -10604,7 +10604,7 @@ arm_depthwise_separable_conv_HWC_u4_u8_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -10704,7 +10704,7 @@ arm_depthwise_separable_conv_HWC_u4_u8_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -10856,7 +10856,7 @@ arm_depthwise_separable_conv_HWC_u4_u4_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -10956,7 +10956,7 @@ arm_depthwise_separable_conv_HWC_u4_u4_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -11108,7 +11108,7 @@ arm_depthwise_separable_conv_HWC_u4_u4_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -11208,7 +11208,7 @@ arm_depthwise_separable_conv_HWC_u4_u4_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -11360,7 +11360,7 @@ arm_depthwise_separable_conv_HWC_u4_u4_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -11460,7 +11460,7 @@ arm_depthwise_separable_conv_HWC_u4_u4_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -11612,7 +11612,7 @@ arm_depthwise_separable_conv_HWC_u4_u2_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -11712,7 +11712,7 @@ arm_depthwise_separable_conv_HWC_u4_u2_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -11864,7 +11864,7 @@ arm_depthwise_separable_conv_HWC_u4_u2_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -11964,7 +11964,7 @@ arm_depthwise_separable_conv_HWC_u4_u2_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -12116,7 +12116,7 @@ arm_depthwise_separable_conv_HWC_u4_u2_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -12216,7 +12216,7 @@ arm_depthwise_separable_conv_HWC_u4_u2_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -12368,7 +12368,7 @@ arm_depthwise_separable_conv_HWC_u2_u8_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -12468,7 +12468,7 @@ arm_depthwise_separable_conv_HWC_u2_u8_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -12620,7 +12620,7 @@ arm_depthwise_separable_conv_HWC_u2_u8_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -12720,7 +12720,7 @@ arm_depthwise_separable_conv_HWC_u2_u8_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -12872,7 +12872,7 @@ arm_depthwise_separable_conv_HWC_u2_u8_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -12972,7 +12972,7 @@ arm_depthwise_separable_conv_HWC_u2_u8_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -13124,7 +13124,7 @@ arm_depthwise_separable_conv_HWC_u2_u4_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -13224,7 +13224,7 @@ arm_depthwise_separable_conv_HWC_u2_u4_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -13376,7 +13376,7 @@ arm_depthwise_separable_conv_HWC_u2_u4_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -13476,7 +13476,7 @@ arm_depthwise_separable_conv_HWC_u2_u4_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -13628,7 +13628,7 @@ arm_depthwise_separable_conv_HWC_u2_u4_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -13728,7 +13728,7 @@ arm_depthwise_separable_conv_HWC_u2_u4_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -13880,7 +13880,7 @@ arm_depthwise_separable_conv_HWC_u2_u2_u8_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -13980,7 +13980,7 @@ arm_depthwise_separable_conv_HWC_u2_u2_u8_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -14132,7 +14132,7 @@ arm_depthwise_separable_conv_HWC_u2_u2_u4_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -14232,7 +14232,7 @@ arm_depthwise_separable_conv_HWC_u2_u2_u4_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -14384,7 +14384,7 @@ arm_depthwise_separable_conv_HWC_u2_u2_u2_icn(const uint8_t * Im_in,
                          const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -14484,7 +14484,7 @@ arm_depthwise_separable_conv_HWC_u2_u2_u2_PACT_CH_icn(const uint8_t * Im_in,
                          const uint8_t *z_wt,
                          const uint8_t z_out,
                          const int32_t *m_zero,
-                         const uint8_t *n_zero,
+                         const int8_t *n_zero,
                          int16_t * bufferA,
                          uint8_t * bufferB);
 
@@ -14578,7 +14578,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u8_int16_u8_icn(const uint8_t * pA,
                                                   const uint8_t z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u8 x int16_t convolution with reordered columns.
@@ -14638,7 +14638,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u8_int16_u8_PACT_CH_icn(const uint8_t 
                                                   const uint8_t *z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u4 x int16_t convolution with reordered columns.
@@ -14730,7 +14730,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u4_int16_u8_icn(const uint8_t * pA,
                                                   const uint8_t z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u4 x int16_t convolution with reordered columns.
@@ -14790,7 +14790,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u4_int16_u8_PACT_CH_icn(const uint8_t 
                                                   const uint8_t *z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u2 x int16_t convolution with reordered columns.
@@ -14882,7 +14882,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u2_int16_u8_icn(const uint8_t * pA,
                                                   const uint8_t z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u2 x int16_t convolution with reordered columns.
@@ -14942,7 +14942,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u2_int16_u8_PACT_CH_icn(const uint8_t 
                                                   const uint8_t *z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u8 x int16_t convolution with reordered columns.
@@ -15034,7 +15034,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u8_int16_u4_icn(const uint8_t * pA,
                                                   const uint8_t z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u8 x int16_t convolution with reordered columns.
@@ -15094,7 +15094,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u8_int16_u4_PACT_CH_icn(const uint8_t 
                                                   const uint8_t *z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u4 x int16_t convolution with reordered columns.
@@ -15186,7 +15186,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u4_int16_u4_icn(const uint8_t * pA,
                                                   const uint8_t z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u4 x int16_t convolution with reordered columns.
@@ -15246,7 +15246,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u4_int16_u4_PACT_CH_icn(const uint8_t 
                                                   const uint8_t *z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u2 x int16_t convolution with reordered columns.
@@ -15338,7 +15338,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u2_int16_u4_icn(const uint8_t * pA,
                                                   const uint8_t z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u2 x int16_t convolution with reordered columns.
@@ -15398,7 +15398,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u2_int16_u4_PACT_CH_icn(const uint8_t 
                                                   const uint8_t *z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u8 x int16_t convolution with reordered columns.
@@ -15490,7 +15490,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u8_int16_u2_icn(const uint8_t * pA,
                                                   const uint8_t z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u8 x int16_t convolution with reordered columns.
@@ -15550,7 +15550,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u8_int16_u2_PACT_CH_icn(const uint8_t 
                                                   const uint8_t *z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u4 x int16_t convolution with reordered columns.
@@ -15642,7 +15642,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u4_int16_u2_icn(const uint8_t * pA,
                                                   const uint8_t z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u4 x int16_t convolution with reordered columns.
@@ -15702,7 +15702,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u4_int16_u2_PACT_CH_icn(const uint8_t 
                                                   const uint8_t *z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u2 x int16_t convolution with reordered columns.
@@ -15794,7 +15794,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u2_int16_u2_icn(const uint8_t * pA,
                                                   const uint8_t z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
  /**
    * @brief Matrix-Multiplication function for u2 x int16_t convolution with reordered columns.
@@ -15854,7 +15854,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u2_int16_u2_PACT_CH_icn(const uint8_t 
                                                   const uint8_t *z_a,
                                                   const uint8_t z_out,
                                                   const int32_t *m_zero,
-                                                  const uint8_t *n_zero);
+                                                  const int8_t *n_zero);
 
 
 #ifdef __cplusplus

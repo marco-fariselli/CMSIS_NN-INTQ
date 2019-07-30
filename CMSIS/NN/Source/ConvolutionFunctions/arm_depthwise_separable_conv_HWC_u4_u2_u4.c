@@ -297,15 +297,15 @@ arm_depthwise_separable_conv_HWC_u4_u2_u4(const uint8_t * Im_in,
                 sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
                 /* Store Outputs (u4 output) */
                 switch(row_per_byte_out){
-                    case 4:                
+                    case 4:
                         *pOut  = ( __USAT(sum, 2) );
                         row_per_byte_out--;
                         break;
                     case 3:
                         *pOut |= ( __USAT(sum, 2) << 2);
                         row_per_byte_out--;
-                        break;                    
-                    case 2:                
+                        break;
+                    case 2:
                         *pOut |= ( __USAT(sum, 2) << 4);
                         row_per_byte_out--;
                         break;

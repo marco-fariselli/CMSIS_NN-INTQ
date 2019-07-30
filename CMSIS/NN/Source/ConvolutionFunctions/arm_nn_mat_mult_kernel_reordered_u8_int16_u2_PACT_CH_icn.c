@@ -65,7 +65,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u8_int16_u2_PACT_CH_icn(const uint8_t 
                                                   const uint8_t *z_a,
 												  const uint8_t z_out,
 												  const int32_t *m_zero,
-												  const uint8_t *n_zero)
+												  const int8_t *n_zero)
 {
 
 #if defined (ARM_MATH_DSP)
@@ -139,8 +139,8 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u8_int16_u2_PACT_CH_icn(const uint8_t 
         /* icn (u2 output) */
         sum  = ((__HI_SMULL(sum,m_zero[i])) >> n_zero[i]) + z_out;
         sum2 = ((__HI_SMULL(sum2,m_zero[i])) >> n_zero[i]) + z_out;
-        sum3 = ((__HI_SMULL(sum3,m_zero[i])) >> n_zero[i]) + z_out;
-        sum4 = ((__HI_SMULL(sum4,m_zero[i])) >> n_zero[i]) + z_out;
+        sum3 = ((__HI_SMULL(sum3,m_zero[i+1])) >> n_zero[i+1]) + z_out;
+        sum4 = ((__HI_SMULL(sum4,m_zero[i+1])) >> n_zero[i+1]) + z_out;
 
         /* Store Outputs (u2 output) */
         if(i & 0x0002 ){ //MSB or-ed with LSB, then increment the pointer
