@@ -21,7 +21,7 @@
  * Project:      CMSIS NN Library - Mixed Precision INT-Q
  * Title:        ${config.filename}
  * Description:  Mixed Precision Convolutional function that uses ${config.in_data_t}
- *               activations, ${config.wt_data_t} weights and produce ${config.in_data_t}
+ *               activations, ${config.wt_data_t} weights and produce ${config.out_data_t}
  *               output activations. Outputs are quantized using ${config.folding}
  *               folding technique.
  *

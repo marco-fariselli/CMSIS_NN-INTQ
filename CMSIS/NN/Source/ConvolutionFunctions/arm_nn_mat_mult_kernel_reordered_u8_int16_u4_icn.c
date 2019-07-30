@@ -142,8 +142,8 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u8_int16_u4_icn(const uint8_t * pA,
         /* icn (u4 output) */
         sum  = ((__HI_SMULL(sum,m_zero[i])) >> n_zero[i]) + z_out;
         sum2 = ((__HI_SMULL(sum2,m_zero[i])) >> n_zero[i]) + z_out;
-        sum3 = ((__HI_SMULL(sum3,m_zero[i])) >> n_zero[i]) + z_out;
-        sum4 = ((__HI_SMULL(sum4,m_zero[i])) >> n_zero[i]) + z_out;
+        sum3 = ((__HI_SMULL(sum3,m_zero[i+1])) >> n_zero[i+1]) + z_out;
+        sum4 = ((__HI_SMULL(sum4,m_zero[i+1])) >> n_zero[i+1]) + z_out;
 
         /* Store Outputs (u4 output) */
         *pOut++  = ( __USAT(sum, 4) & 0x0F ) | (( __USAT(sum3, 4) << 4 ) & 0xF0 );
