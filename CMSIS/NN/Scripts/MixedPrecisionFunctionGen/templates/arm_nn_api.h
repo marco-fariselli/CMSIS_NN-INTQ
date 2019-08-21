@@ -69,7 +69,7 @@ ${config.fn_name}(const uint8_t * Im_in,
                          const int8_t *n_zero,
     % else:
                          const int32_t m_zero,
-                         const uint8_t n_zero,
+                         const int8_t n_zero,
     % endif
 % endif
                          int16_t * bufferA,
@@ -128,7 +128,7 @@ uint8_t *${config.fn_name}(const uint8_t * pA,
 % else:
                                                   const uint8_t z_out,
                                                   const int32_t m_zero,
-                                                  const uint8_t n_zero);
+                                                  const int8_t n_zero);
 % endif
 % elif config.api=="CMSISDepthwise":
 /**
@@ -202,7 +202,7 @@ ${config.fn_name}(const uint8_t * Im_in,
                          const int8_t *n_zero,
     % else:
                          const int32_t m_zero,
-                         const uint8_t n_zero,
+                         const int8_t n_zero,
     % endif
 % endif
                          int16_t * bufferA,

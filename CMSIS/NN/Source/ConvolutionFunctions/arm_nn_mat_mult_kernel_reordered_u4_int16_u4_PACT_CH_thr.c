@@ -72,6 +72,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u4_int16_u4_PACT_CH_thr(const uint8_t 
     const int16_t *pB2 = pB + numCol_A;
 
 
+
     /* this loop over rows in A */
     for (i = 0; i < ch_im_out; i += 2)
     {

@@ -115,7 +115,7 @@ ${config.fn_name}(const uint8_t * Im_in,
                          const int8_t *n_zero,
     % else:
                          const int32_t m_zero,
-                         const uint8_t n_zero,
+                         const int8_t n_zero,
     % endif
 % endif
 						 int16_t * bufferA,
@@ -143,6 +143,19 @@ ${config.fn_name}(const uint8_t * Im_in,
 	int16_t Vz_in[2] = {z_in,z_in};
 	const int32_t *pz_in = (int32_t *) Vz_in;
 	int32_t inz_in = *__SIMD32(pz_in);
+
+%if config.folding == "weights":
+	/* negative n_zero handling */
+	int8_t n_zero1;
+	int8_t n_zero2;
+	if (n_zero > 0){
+		n_zero1 = 0;
+		n_zero2 = n_zero;
+	} else {
+		n_zero1 = - n_zero;
+		n_zero2 = 0;
+	}
+%endif
 
     /* do some checking here, basically ch_im_in == ch_im_out */
     if (ch_im_in != ch_im_out)
@@ -447,10 +460,10 @@ ${config.fn_name}(const uint8_t * Im_in,
                 sum4 = ((__HI_SMULL(sum4,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
         % else:
                 /* PACT+FW (u8 output) */
-                sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
-                sum2 = ((__HI_SMULL(sum2,m_zero)) >> n_zero) + z_out;
-                sum3 = ((__HI_SMULL(sum3,m_zero)) >> n_zero) + z_out;
-                sum4 = ((__HI_SMULL(sum4,m_zero)) >> n_zero) + z_out;
+                sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
+                sum2 = ((__HI_SMULL(sum2 << n_zero1,m_zero)) >> n_zero2) + z_out;
+                sum3 = ((__HI_SMULL(sum3 << n_zero1,m_zero)) >> n_zero2) + z_out;
+                sum4 = ((__HI_SMULL(sum4 << n_zero1,m_zero)) >> n_zero2) + z_out;
         % endif
 
                 /* Store Outputs (u8 output) */
@@ -479,11 +492,11 @@ ${config.fn_name}(const uint8_t * Im_in,
                 sum3 = ((__HI_SMULL(sum3,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
                 sum4 = ((__HI_SMULL(sum4,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
         % else:
-                /* icn per-layer (u4 output) */
-                sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
-                sum2 = ((__HI_SMULL(sum2,m_zero)) >> n_zero) + z_out;
-                sum3 = ((__HI_SMULL(sum3,m_zero)) >> n_zero) + z_out;
-                sum4 = ((__HI_SMULL(sum4,m_zero)) >> n_zero) + z_out;
+                /* PACT+FW (u4 output) */
+                sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
+                sum2 = ((__HI_SMULL(sum2 << n_zero1,m_zero)) >> n_zero2) + z_out;
+                sum3 = ((__HI_SMULL(sum3 << n_zero1,m_zero)) >> n_zero2) + z_out;
+                sum4 = ((__HI_SMULL(sum4 << n_zero1,m_zero)) >> n_zero2) + z_out;
         % endif
 
                 /* Store Outputs (u4 output) */
@@ -508,11 +521,11 @@ ${config.fn_name}(const uint8_t * Im_in,
                 sum4 = ((__HI_SMULL(sum4,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
         % else:
 
-                /* icn per-layer (u2 output) */
-                sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
-                sum2 = ((__HI_SMULL(sum2,m_zero)) >> n_zero) + z_out;
-                sum3 = ((__HI_SMULL(sum3,m_zero)) >> n_zero) + z_out;
-                sum4 = ((__HI_SMULL(sum4,m_zero)) >> n_zero) + z_out;
+                /* PACT+FW (u2 output) */
+                sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
+                sum2 = ((__HI_SMULL(sum2 << n_zero1,m_zero)) >> n_zero2) + z_out;
+                sum3 = ((__HI_SMULL(sum3 << n_zero1,m_zero)) >> n_zero2) + z_out;
+                sum4 = ((__HI_SMULL(sum4 << n_zero1,m_zero)) >> n_zero2) + z_out;
         % endif
 
                 *pOut++ = ( __USAT(sum,2)) | ( __USAT(sum2,2) << 2 ) | ( __USAT(sum3,2) << 4 ) | ( __USAT(sum4,2) << 6 );
@@ -615,7 +628,7 @@ ${config.fn_name}(const uint8_t * Im_in,
                 sum  = ((__HI_SMULL(sum,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
         % else:
                 /* PACT+FW (u8 output) */
-                sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
+                sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
         % endif
 
                 /* Store Outputs (u8 output) */
@@ -642,8 +655,8 @@ ${config.fn_name}(const uint8_t * Im_in,
                 /* icn (u4 output) */
                 sum  = ((__HI_SMULL(sum,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
         % else:
-                /* icn per-layer (u4 output) */
-                sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
+                /* PACT+FW (u4 output) */
+                sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
         % endif
                 /* Store Outputs (u4 output) */
                 switch(row_per_byte_out){
@@ -688,8 +701,8 @@ ${config.fn_name}(const uint8_t * Im_in,
                 sum  = ((__HI_SMULL(sum,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
         % else:
 
-                /* icn per-layer (u2 output) */
-                sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
+                /* PACT+FW (u2 output) */
+                sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
         % endif
                 /* Store Outputs (u4 output) */
                 switch(row_per_byte_out){

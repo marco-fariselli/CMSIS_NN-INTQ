@@ -88,7 +88,7 @@ uint8_t *${config.fn_name}(const uint8_t * pA,
 % else:
                                                   const uint8_t z_out,
     											  const int32_t m_zero,
-												  const uint8_t n_zero)
+												  const int8_t n_zero)
 % endif
 {
 
@@ -104,6 +104,19 @@ uint8_t *${config.fn_name}(const uint8_t * pA,
     int     i;
     const int16_t *pB = pInBuffer;
     const int16_t *pB2 = pB + numCol_A;
+
+%if config.folding == "weights":
+    /* negative n_zero handling */
+    int8_t n_zero1;
+    int8_t n_zero2;
+    if (n_zero > 0){
+        n_zero1 = 0;
+        n_zero2 = n_zero;
+    } else {
+        n_zero1 = - n_zero;
+        n_zero2 = 0;
+    }
+%endif
 
 % if config.quantization=="PACT":
     int16_t VzA[2] = {z_a,z_a};
@@ -338,10 +351,10 @@ uint8_t *${config.fn_name}(const uint8_t * pA,
         % else:
 
         /* PACT+FW (u8 output) */
-        sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
-        sum2 = ((__HI_SMULL(sum2,m_zero)) >> n_zero) + z_out;
-        sum3 = ((__HI_SMULL(sum3,m_zero)) >> n_zero) + z_out;
-        sum4 = ((__HI_SMULL(sum4,m_zero)) >> n_zero) + z_out;
+        sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
+        sum2 = ((__HI_SMULL(sum2 << n_zero1,m_zero)) >> n_zero2) + z_out;
+        sum3 = ((__HI_SMULL(sum3 << n_zero1,m_zero)) >> n_zero2) + z_out;
+        sum4 = ((__HI_SMULL(sum4 << n_zero1,m_zero)) >> n_zero2) + z_out;
         % endif
 
         /* Store Outputs (u8 output) */
@@ -372,11 +385,11 @@ uint8_t *${config.fn_name}(const uint8_t * pA,
         sum4 = ((__HI_SMULL(sum4,m_zero[i+1])) >> n_zero[i+1]) + z_out;
         % else:
 
-        /* icn per-layer (u4 output) */
-        sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
-        sum2 = ((__HI_SMULL(sum2,m_zero)) >> n_zero) + z_out;
-        sum3 = ((__HI_SMULL(sum3,m_zero)) >> n_zero) + z_out;
-        sum4 = ((__HI_SMULL(sum4,m_zero)) >> n_zero) + z_out;
+        /* PACT+FW (u4 output) */
+        sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
+        sum2 = ((__HI_SMULL(sum2 << n_zero1,m_zero)) >> n_zero2) + z_out;
+        sum3 = ((__HI_SMULL(sum3 << n_zero1,m_zero)) >> n_zero2) + z_out;
+        sum4 = ((__HI_SMULL(sum4 << n_zero1,m_zero)) >> n_zero2) + z_out;
         % endif
 
         /* Store Outputs (u4 output) */
@@ -415,11 +428,11 @@ uint8_t *${config.fn_name}(const uint8_t * pA,
         sum4 = ((__HI_SMULL(sum4,m_zero[i+1])) >> n_zero[i+1]) + z_out;
         % else:
 
-        /* icn per-layer (u2 output) */
-        sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
-        sum2 = ((__HI_SMULL(sum2,m_zero)) >> n_zero) + z_out;
-        sum3 = ((__HI_SMULL(sum3,m_zero)) >> n_zero) + z_out;
-        sum4 = ((__HI_SMULL(sum4,m_zero)) >> n_zero) + z_out;
+        /* PACT+FW (u2 output) */
+        sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
+        sum2 = ((__HI_SMULL(sum2 << n_zero1,m_zero)) >> n_zero2) + z_out;
+        sum3 = ((__HI_SMULL(sum3 << n_zero1,m_zero)) >> n_zero2) + z_out;
+        sum4 = ((__HI_SMULL(sum4 << n_zero1,m_zero)) >> n_zero2) + z_out;
         % endif
 
         /* Store Outputs (u2 output) */

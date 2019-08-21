@@ -92,7 +92,7 @@ arm_depthwise_separable_conv_HWC_u2_u8_u4(const uint8_t * Im_in,
 						 const uint8_t z_wt,
                          const uint8_t z_out,
                          const int32_t m_zero,
-                         const uint8_t n_zero,
+                         const int8_t n_zero,
 						 int16_t * bufferA,
 						 uint8_t * bufferB)
 {
@@ -116,6 +116,17 @@ arm_depthwise_separable_conv_HWC_u2_u8_u4(const uint8_t * Im_in,
 	int16_t Vz_in[2] = {z_in,z_in};
 	const int32_t *pz_in = (int32_t *) Vz_in;
 	int32_t inz_in = *__SIMD32(pz_in);
+
+	/* negative n_zero handling */
+	int8_t n_zero1;
+	int8_t n_zero2;
+	if (n_zero > 0){
+		n_zero1 = 0;
+		n_zero2 = n_zero;
+	} else {
+		n_zero1 = - n_zero;
+		n_zero2 = 0;
+	}
 
     /* do some checking here, basically ch_im_in == ch_im_out */
     if (ch_im_in != ch_im_out)
@@ -249,10 +260,10 @@ arm_depthwise_separable_conv_HWC_u2_u8_u4(const uint8_t * Im_in,
 
 
                 /* PACT+FW (u8 output) */
-                sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
-                sum2 = ((__HI_SMULL(sum2,m_zero)) >> n_zero) + z_out;
-                sum3 = ((__HI_SMULL(sum3,m_zero)) >> n_zero) + z_out;
-                sum4 = ((__HI_SMULL(sum4,m_zero)) >> n_zero) + z_out;
+                sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
+                sum2 = ((__HI_SMULL(sum2 << n_zero1,m_zero)) >> n_zero2) + z_out;
+                sum3 = ((__HI_SMULL(sum3 << n_zero1,m_zero)) >> n_zero2) + z_out;
+                sum4 = ((__HI_SMULL(sum4 << n_zero1,m_zero)) >> n_zero2) + z_out;
 
                 /* Store Outputs (u8 output) */
                 *pOut++ = (uint8_t) __USAT(sum, 8);
@@ -299,7 +310,7 @@ arm_depthwise_separable_conv_HWC_u2_u8_u4(const uint8_t * Im_in,
                     colCnt--;
                 }
                 /* PACT+FW (u8 output) */
-                sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
+                sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
 
                 /* Store Outputs (u8 output) */
                 *pOut++ = (uint8_t) __USAT(sum, 8);

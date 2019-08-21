@@ -65,7 +65,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u4_int16_u2(const uint8_t * pA,
                                                   const uint8_t z_a,
                                                   const uint8_t z_out,
     											  const int32_t m_zero,
-												  const uint8_t n_zero)
+												  const int8_t n_zero)
 {
 
 #if defined (ARM_MATH_DSP)
@@ -74,6 +74,17 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u4_int16_u2(const uint8_t * pA,
     int     i;
     const int16_t *pB = pInBuffer;
     const int16_t *pB2 = pB + numCol_A;
+
+    /* negative n_zero handling */
+    int8_t n_zero1;
+    int8_t n_zero2;
+    if (n_zero > 0){
+        n_zero1 = 0;
+        n_zero2 = n_zero;
+    } else {
+        n_zero1 = - n_zero;
+        n_zero2 = 0;
+    }
 
     int16_t VzA[2] = {z_a,z_a};
 	const int16_t *pzA = VzA;
@@ -183,11 +194,11 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u4_int16_u2(const uint8_t * pA,
 #endif
 
 
-        /* icn per-layer (u2 output) */
-        sum  = ((__HI_SMULL(sum,m_zero)) >> n_zero) + z_out;
-        sum2 = ((__HI_SMULL(sum2,m_zero)) >> n_zero) + z_out;
-        sum3 = ((__HI_SMULL(sum3,m_zero)) >> n_zero) + z_out;
-        sum4 = ((__HI_SMULL(sum4,m_zero)) >> n_zero) + z_out;
+        /* PACT+FW (u2 output) */
+        sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
+        sum2 = ((__HI_SMULL(sum2 << n_zero1,m_zero)) >> n_zero2) + z_out;
+        sum3 = ((__HI_SMULL(sum3 << n_zero1,m_zero)) >> n_zero2) + z_out;
+        sum4 = ((__HI_SMULL(sum4 << n_zero1,m_zero)) >> n_zero2) + z_out;
 
         /* Store Outputs (u2 output) */
         if(i & 0x0002 ){ //MSB or-ed with LSB, then increment the pointer

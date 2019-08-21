@@ -75,6 +75,7 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u2_int16_u2_icn(const uint8_t * pA,
     const int16_t *pB = pInBuffer;
     const int16_t *pB2 = pB + numCol_A;
 
+
     int16_t VzA[2] = {z_a,z_a};
 	const int16_t *pzA = VzA;
 	int32_t inzA = *__SIMD32(pzA);
