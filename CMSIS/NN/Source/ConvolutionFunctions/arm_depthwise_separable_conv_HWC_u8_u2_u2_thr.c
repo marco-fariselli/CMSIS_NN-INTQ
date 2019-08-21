@@ -135,6 +135,7 @@ arm_depthwise_separable_conv_HWC_u8_u2_u2_thr(const uint8_t * Im_in,
                     {
                         memcpy(pBuffer, Im_in + (i_ker_y * dim_im_in + i_ker_x) * ch_im_in, ch_im_in);
                     }
+                    pBuffer += ch_im_in;
                 }
             }
 

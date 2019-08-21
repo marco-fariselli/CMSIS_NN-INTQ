@@ -179,7 +179,25 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u2_int16_u2_PACT_CH_icn(const uint8_t 
         } /* while over colCnt */
 
 #if 0
-        //FIXME Lefover cols is missing
+        //FIXME 
+
+        colCnt = numCol_A & 0x3;
+           while (colCnt)
+           {
+               int16_t   inA1 = (int16_t)*pA++;
+               int16_t   inB1 = *pB++;
+               int16_t   inA2 = (int16_t)*pA2++;
+               int16_t   inB2 = *pB2++;
+
+               //inA1 = inA1 - VzA[0];
+               //inA2 = inA2 - VzA[0];
+
+               sum  += inA1 * inB1;
+               sum2 += inA1 * inB2;
+               sum3 += inA2 * inB1;
+               sum4 += inA2 * inB2;
+               colCnt--;
+           }/* while over colCnt */
 #endif
 
         /* icn (u2 output) */

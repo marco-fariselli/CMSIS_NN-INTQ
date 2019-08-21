@@ -90,6 +90,15 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u8_int16_u4_icn(const uint8_t * pA,
     	z_a_offset2 = __SMLAD(inzA, inB2, z_a_offset2);
     }
 
+    //leftover
+    if (numCol_A & 0x1)
+    {
+        int16_t inB1 = *pB;
+        int16_t inB2 = *pB2;
+        z_a_offset += inB1*z_a;
+        z_a_offset2 += inB2*z_a;
+    }
+
     /* this loop over rows in A */
     for (i = 0; i < ch_im_out; i += 2)
     {
@@ -135,7 +144,25 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u8_int16_u4_icn(const uint8_t * pA,
         } /* while over colCnt */
 
 #if 0
-        //FIXME Lefover cols is missing
+        //FIXME 
+
+        colCnt = numCol_A & 0x3;
+           while (colCnt)
+           {
+               int16_t   inA1 = (int16_t)*pA++;
+               int16_t   inB1 = *pB++;
+               int16_t   inA2 = (int16_t)*pA2++;
+               int16_t   inB2 = *pB2++;
+
+               //inA1 = inA1 - VzA[0];
+               //inA2 = inA2 - VzA[0];
+
+               sum  += inA1 * inB1;
+               sum2 += inA1 * inB2;
+               sum3 += inA2 * inB1;
+               sum4 += inA2 * inB2;
+               colCnt--;
+           }/* while over colCnt */
 #endif
 
 

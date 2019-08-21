@@ -138,12 +138,13 @@ arm_depthwise_separable_conv_HWC_u4_u2_u4(const uint8_t * Im_in,
                     } else
                     {
                         /* Unpack Input uint4_t to uint8_t */
-                        const uint8_t *Im_in2 =  Im_in + (i_ker_y * (dim_im_in>>1) + i_ker_x) * (ch_im_in>>1);
+                        const uint8_t *Im_in2 =  Im_in + (i_ker_y * (dim_im_in) + i_ker_x) * (ch_im_in>>1);
                         for(int j=0, jj=0; j<ch_im_in>>1; j++){
                             pBuffer[jj++] =  Im_in2[j]       & 0x0F;
                             pBuffer[jj++] = (Im_in2[j] >> 4) & 0x0F;
                         }
                     }
+                    pBuffer += ch_im_in;
                 }
             }
 
