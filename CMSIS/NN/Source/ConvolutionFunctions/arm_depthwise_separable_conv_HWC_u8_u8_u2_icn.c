@@ -251,8 +251,8 @@ arm_depthwise_separable_conv_HWC_u8_u8_u2_icn(const uint8_t * Im_in,
 
                 /* Store Outputs (u8 output) */
                 *pOut++ = (uint8_t) __USAT(sum, 8);
-                *pOut++ = (uint8_t) __USAT(sum3, 8);
                 *pOut++ = (uint8_t) __USAT(sum2, 8);
+                *pOut++ = (uint8_t) __USAT(sum3, 8);
                 *pOut++ = (uint8_t) __USAT(sum4, 8);
 
 
