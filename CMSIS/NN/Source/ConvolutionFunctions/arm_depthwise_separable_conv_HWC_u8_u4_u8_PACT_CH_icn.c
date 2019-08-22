@@ -114,6 +114,10 @@ arm_depthwise_separable_conv_HWC_u8_u4_u8_PACT_CH_icn(const uint8_t * Im_in,
 	const int32_t *pz_in = (int32_t *) Vz_in;
 	int32_t inz_in = *__SIMD32(pz_in);
 
+	/* negative n_zero handling */
+	int8_t n_zero1;
+	int8_t n_zero2;
+
 
     /* do some checking here, basically ch_im_in == ch_im_out */
     if (ch_im_in != ch_im_out)
@@ -242,10 +246,18 @@ arm_depthwise_separable_conv_HWC_u8_u4_u8_PACT_CH_icn(const uint8_t * Im_in,
 
 
                 /* icn (u4 output) */
-                sum  = ((__HI_SMULL(sum,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
-                sum2 = ((__HI_SMULL(sum2,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
-                sum3 = ((__HI_SMULL(sum3,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
-                sum4 = ((__HI_SMULL(sum4,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
+                /* negative n_zero handling */
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum2  = ((__HI_SMULL(sum2 << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum3  = ((__HI_SMULL(sum3 << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+				sum4  = ((__HI_SMULL(sum4 << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
 
                 /* Store Outputs (u4 output) */
                 *pOut++  = ( __USAT(sum, 4) ) | ( __USAT(sum2, 4) << 4 );
@@ -282,7 +294,8 @@ arm_depthwise_separable_conv_HWC_u8_u4_u8_PACT_CH_icn(const uint8_t * Im_in,
                     colCnt--;
                 }
                 /* icn (u4 output) */
-                sum  = ((__HI_SMULL(sum,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
                 /* Store Outputs (u4 output) */
                 switch(row_per_byte_out){
                     case 2:

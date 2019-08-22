@@ -75,6 +75,9 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u2_int16_u4_PACT_CH_icn(const uint8_t 
     const int16_t *pB = pInBuffer;
     const int16_t *pB2 = pB + numCol_A;
 
+    /* negative n_zero handling */
+    int8_t n_zero1;
+    int8_t n_zero2;
 
 
     /* this loop over rows in A */
@@ -203,10 +206,17 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u2_int16_u4_PACT_CH_icn(const uint8_t 
 
 
         /* icn (u4 output) */
-        sum  = ((__HI_SMULL(sum,m_zero[i])) >> n_zero[i]) + z_out;
-        sum2 = ((__HI_SMULL(sum2,m_zero[i])) >> n_zero[i]) + z_out;
-        sum3 = ((__HI_SMULL(sum3,m_zero[i+1])) >> n_zero[i+1]) + z_out;
-        sum4 = ((__HI_SMULL(sum4,m_zero[i+1])) >> n_zero[i+1]) + z_out;
+        __n_zero_negative_normalization(n_zero[i],&n_zero1,&n_zero2);
+        sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[i])) >> n_zero2) + z_out;
+
+        __n_zero_negative_normalization(n_zero[i],&n_zero1,&n_zero2);
+        sum2  = ((__HI_SMULL(sum2 << n_zero1 ,m_zero[i])) >> n_zero2) + z_out;
+
+        __n_zero_negative_normalization(n_zero[i+1],&n_zero1,&n_zero2);
+        sum3  = ((__HI_SMULL(sum3 << n_zero1 ,m_zero[i+1])) >> n_zero2) + z_out;
+
+        __n_zero_negative_normalization(n_zero[i+1],&n_zero1,&n_zero2);
+        sum4  = ((__HI_SMULL(sum4 << n_zero1 ,m_zero[i+1])) >> n_zero2) + z_out;
 
         /* Store Outputs (u4 output) */
         *pOut++  = ( __USAT(sum, 4) & 0x0F ) | (( __USAT(sum3, 4) << 4 ) & 0xF0 );

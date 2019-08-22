@@ -155,7 +155,12 @@ ${config.fn_name}(const uint8_t * Im_in,
 		n_zero1 = - n_zero;
 		n_zero2 = 0;
 	}
+%elif config.folding == "icn":
+	/* negative n_zero handling */
+	int8_t n_zero1;
+	int8_t n_zero2;
 %endif
+
 
     /* do some checking here, basically ch_im_in == ch_im_out */
     if (ch_im_in != ch_im_out)
@@ -454,10 +459,19 @@ ${config.fn_name}(const uint8_t * Im_in,
     % else:
         % if config.folding=="icn":
                 /* icn (u8 output) */
-                sum  = ((__HI_SMULL(sum,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
-                sum2 = ((__HI_SMULL(sum2,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
-                sum3 = ((__HI_SMULL(sum3,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
-                sum4 = ((__HI_SMULL(sum4,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
+                /* negative n_zero handling */
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum2  = ((__HI_SMULL(sum2 << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum3  = ((__HI_SMULL(sum3 << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+				sum4  = ((__HI_SMULL(sum4 << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
         % else:
                 /* PACT+FW (u8 output) */
                 sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
@@ -487,10 +501,18 @@ ${config.fn_name}(const uint8_t * Im_in,
     % else:
         % if config.folding=="icn":
                 /* icn (u4 output) */
-                sum  = ((__HI_SMULL(sum,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
-                sum2 = ((__HI_SMULL(sum2,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
-                sum3 = ((__HI_SMULL(sum3,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
-                sum4 = ((__HI_SMULL(sum4,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
+                /* negative n_zero handling */
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum2  = ((__HI_SMULL(sum2 << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum3  = ((__HI_SMULL(sum3 << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+				sum4  = ((__HI_SMULL(sum4 << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
         % else:
                 /* PACT+FW (u4 output) */
                 sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
@@ -515,10 +537,18 @@ ${config.fn_name}(const uint8_t * Im_in,
     % else:
         % if config.folding=="icn":
                 /* icn (u2 output) */
-                sum  = ((__HI_SMULL(sum,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
-                sum2 = ((__HI_SMULL(sum2,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
-                sum3 = ((__HI_SMULL(sum3,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
-                sum4 = ((__HI_SMULL(sum4,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
+                /* negative n_zero handling */
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum2  = ((__HI_SMULL(sum2 << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum3  = ((__HI_SMULL(sum3 << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+				sum4  = ((__HI_SMULL(sum4 << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
         % else:
 
                 /* PACT+FW (u2 output) */
@@ -625,7 +655,8 @@ ${config.fn_name}(const uint8_t * Im_in,
     % else:
         % if config.folding=="icn":
                 /* icn (u8 output) */
-                sum  = ((__HI_SMULL(sum,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
         % else:
                 /* PACT+FW (u8 output) */
                 sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
@@ -653,7 +684,8 @@ ${config.fn_name}(const uint8_t * Im_in,
     % else:
         % if config.folding=="icn":
                 /* icn (u4 output) */
-                sum  = ((__HI_SMULL(sum,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
         % else:
                 /* PACT+FW (u4 output) */
                 sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
@@ -698,7 +730,8 @@ ${config.fn_name}(const uint8_t * Im_in,
     % else:
         % if config.folding=="icn":
                 /* icn (u2 output) */
-                sum  = ((__HI_SMULL(sum,m_zero[ch_out_id])) >> n_zero[ch_out_id++]) + z_out;
+				__n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+                sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
         % else:
 
                 /* PACT+FW (u2 output) */

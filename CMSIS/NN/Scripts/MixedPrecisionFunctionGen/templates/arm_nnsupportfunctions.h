@@ -218,6 +218,21 @@ __STATIC_INLINE int32_t __HI_SMULL(int32_t a, int32_t b)
   return hi;
 }
 
+
+__STATIC_INLINE void __n_zero_negative_normalization(int8_t n_zero, int8_t *n_zero1, int8_t*n_zero2)
+{
+  if (n_zero > 0)
+  {
+    *n_zero1 = 0;
+    *n_zero2 = n_zero;
+  }
+  else
+  {
+    *n_zero1 = -n_zero;
+    *n_zero2 = 0;
+  }
+}
+
 #endif
 
 /* Threasholds from int16 to u4 */

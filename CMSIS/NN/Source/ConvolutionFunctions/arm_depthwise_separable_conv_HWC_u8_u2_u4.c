@@ -128,6 +128,7 @@ arm_depthwise_separable_conv_HWC_u8_u2_u4(const uint8_t * Im_in,
 		n_zero2 = 0;
 	}
 
+
     /* do some checking here, basically ch_im_in == ch_im_out */
     if (ch_im_in != ch_im_out)
     {
