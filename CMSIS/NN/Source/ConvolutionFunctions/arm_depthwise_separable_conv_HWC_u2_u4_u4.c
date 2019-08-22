@@ -124,7 +124,7 @@ arm_depthwise_separable_conv_HWC_u2_u4_u4(const uint8_t * Im_in,
 		n_zero1 = 0;
 		n_zero2 = n_zero;
 	} else {
-		n_zero1 = - n_zero + 1;
+		n_zero1 = - n_zero;
 		n_zero2 = 0;
 	}
 
