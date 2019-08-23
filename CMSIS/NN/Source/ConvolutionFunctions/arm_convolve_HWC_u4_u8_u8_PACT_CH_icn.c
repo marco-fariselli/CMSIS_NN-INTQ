@@ -322,7 +322,66 @@ arm_convolve_HWC_u4_u8_u8_PACT_CH_icn(const uint8_t *Im_in,
     }
 
     /* check if there is left-over for compute */
-    $ { config.get_leftover_code() }
+    if (pBuffer != bufferA)
+    {
+        /* Negative N_ZERO Normalization */
+        int8_t n_zero1;
+        int8_t n_zero2;
+
+
+        /* Weights Pointer */
+        const uint8_t *pA = wt;
+        int       i;
+
+
+        for (i = 0; i < ch_im_out; i++)
+        {
+            /* Offset over Weights */
+            int16_t Vz_wt[2] = {z_wt[ch_out_id], z_wt[ch_out_id]};
+            const int16_t *pzA = VzA;
+            int32_t inzA = *__SIMD32(pzA);
+            int32_t sum = bias[i];
+            int16_t *pB = bufferA;
+
+            uint16_t  colCnt = ch_im_in * dim_kernel * dim_kernel >> 2; // config.wt_data_t: u4 (4x uint8_t)
+
+            /* accumulate over the vector */
+            while (colCnt)
+            {
+                int32_t inA1, inA2;
+                int32_t inB1, inB2;
+
+                pA = (uint8_t *) read_and_pad_reordered_uint8((void *)pA, &inA1, &inA2);
+
+                inB1 = *__SIMD32(pB)++;
+                inA1 = __SSUB16(inA1, inzA);
+                inA2 = __SSUB16(inA2, inzA);
+                sum = __SMLAD(inA1, inB1, sum);
+                inB2 = *__SIMD32(pB)++;
+                sum = __SMLAD(inA2, inB2, sum);
+                colCnt--;
+            }
+
+            colCnt = ch_im_in * dim_kernel * dim_kernel & 0x3; // config.wt_data_t: u4 (4x uint8_t)
+
+            while (colCnt)
+            {
+                uint8_t inB1 = (uint8_t) *pB++;
+                uint8_t inA1;
+                inA1 = (uint8_t)*pA++;
+                inA1 -= z_wt[ch_out_id];
+                sum += inA1 * inB1;
+                colCnt--;
+            }
+
+            /* Normalize by ICN (u8 output) */
+            __n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+            sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+
+            /* Store Outputs (u8 output) */
+            *pOut++ = (uint8_t) __USAT(sum, 8);
+        }
+    }
 
 #else
 #error "Cortex-M0 and Cortex-M3 not supported"

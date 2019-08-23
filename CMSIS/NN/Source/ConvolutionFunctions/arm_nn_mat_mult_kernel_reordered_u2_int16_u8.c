@@ -82,18 +82,18 @@ uint8_t
     __n_zero_negative_normalization(n_zero,&n_zero1,&n_zero2);
 
     int16_t VzA[2] = {z_a,z_a};
-	const int16_t *pzA = VzA;
-	int32_t inzA = *__SIMD32(pzA);
+    const int16_t *pzA = VzA;
+    int32_t inzA = *__SIMD32(pzA);
 
     /* Pre-compute z_a offset over the inputs */
     int32_t z_a_offset  = 0;
-	int32_t z_a_offset2 = 0;
+    int32_t z_a_offset2 = 0;
 
     for (i = 0; i < numCol_A; i += 2) {
-    	int32_t inB1 = *__SIMD32(pB)++;
-    	int32_t inB2 = *__SIMD32(pB2)++;
-    	z_a_offset = __SMLAD(inzA, inB1, z_a_offset);
-    	z_a_offset2 = __SMLAD(inzA, inB2, z_a_offset2);
+        int32_t inB1 = *__SIMD32(pB)++;
+        int32_t inB2 = *__SIMD32(pB2)++;
+        z_a_offset = __SMLAD(inzA, inB1, z_a_offset);
+        z_a_offset2 = __SMLAD(inzA, inB2, z_a_offset2);
     }
 
     /* Leftover column */
@@ -120,18 +120,18 @@ uint8_t
         int32_t     sum3 = bias[i + 1] - z_a_offset;
         int32_t     sum4 = bias[i + 1] - z_a_offset2;
 
-        uint16_t  colCnt = numCol_A >> 4; // config.wt_data_t: u2 (16x uint4_t)
+        uint16_t  colCnt = numCol_A >> 4; // config.wt_data_t: u2 (16x uint2_t)
 
         /* accumulate over the vector */
         while (colCnt)
         {
-        	int32_t inA11, inA12, inA21, inA22;
+            int32_t inA11, inA12, inA21, inA22;
             int32_t inA13, inA14, inA23, inA24;
             int32_t inA15, inA16, inA25, inA26;
             int32_t inA17, inA18, inA27, inA28;
 
-        	int32_t inB1 = *__SIMD32(pB)++;
-        	int32_t inB2 = *__SIMD32(pB2)++;
+            int32_t inB1 = *__SIMD32(pB)++;
+            int32_t inB2 = *__SIMD32(pB2)++;
 
             pA = (uint8_t *) read_and_pad_reordered_u2((void *)pA, &inA11, &inA12, &inA13, &inA14, &inA15, &inA16, &inA17, &inA18);
             pA2 = (uint8_t *) read_and_pad_reordered_u2((void *)pA2, &inA21, &inA22, &inA23, &inA24, &inA25, &inA26, &inA27, &inA28);
@@ -203,6 +203,34 @@ uint8_t
             sum4 += inA2 * inB2;
             colCnt--;
         }
+
+            colCnt = ch_im_in * dim_kernel * dim_kernel & 0xf; // config.wt_data_t: u2 (16x uint2_t)
+
+            int wt_per_byte = 4;
+            while (colCnt)
+            {
+            	uint8_t inB1 = (uint8_t) *pB++;
+                uint8_t inA1;
+                switch(wt_per_byte)
+                {
+                    case 4:
+                        inA1 = (uint8_t) __USAT(*pA, 2);
+                        break;
+                    case 3:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 2), 2);
+                        break;
+                    case 2:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 2), 4);
+                        break;
+                    case 1:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 2), 6);
+                        pA++;
+                        break;
+                }
+                inA1 -= z_wt;
+                sum += inA1 * inB1;
+                colCnt--;
+            }        
 #endif
 
         /* Normalize by PACT+FW (u8 output) */
@@ -223,7 +251,7 @@ uint8_t
 
     pOut += ch_im_out;
 #else
-	#error "Cortex-M0 and Cortex-M3 not supported"
+    #error "Cortex-M0 and Cortex-M3 not supported"
     /* Run the following code as reference implementation for Cortex-M0 and Cortex-M3 */
 #endif /* ARM_MATH_DSP */
 

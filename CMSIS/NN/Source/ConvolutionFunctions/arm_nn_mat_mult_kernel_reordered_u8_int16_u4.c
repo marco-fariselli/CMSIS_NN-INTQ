@@ -82,18 +82,18 @@ uint8_t
     __n_zero_negative_normalization(n_zero,&n_zero1,&n_zero2);
 
     int16_t VzA[2] = {z_a,z_a};
-	const int16_t *pzA = VzA;
-	int32_t inzA = *__SIMD32(pzA);
+    const int16_t *pzA = VzA;
+    int32_t inzA = *__SIMD32(pzA);
 
     /* Pre-compute z_a offset over the inputs */
     int32_t z_a_offset  = 0;
-	int32_t z_a_offset2 = 0;
+    int32_t z_a_offset2 = 0;
 
     for (i = 0; i < numCol_A; i += 2) {
-    	int32_t inB1 = *__SIMD32(pB)++;
-    	int32_t inB2 = *__SIMD32(pB2)++;
-    	z_a_offset = __SMLAD(inzA, inB1, z_a_offset);
-    	z_a_offset2 = __SMLAD(inzA, inB2, z_a_offset2);
+        int32_t inB1 = *__SIMD32(pB)++;
+        int32_t inB2 = *__SIMD32(pB2)++;
+        z_a_offset = __SMLAD(inzA, inB1, z_a_offset);
+        z_a_offset2 = __SMLAD(inzA, inB2, z_a_offset2);
     }
 
     /* Leftover column */
@@ -125,10 +125,10 @@ uint8_t
         /* accumulate over the vector */
         while (colCnt)
         {
-        	int32_t inA11, inA12, inA21, inA22;
+            int32_t inA11, inA12, inA21, inA22;
 
-        	int32_t inB1 = *__SIMD32(pB)++;
-        	int32_t inB2 = *__SIMD32(pB2)++;
+            int32_t inB1 = *__SIMD32(pB)++;
+            int32_t inB2 = *__SIMD32(pB2)++;
 
             pA = (uint8_t *) read_and_pad_reordered_u8((void *)pA, &inA11, &inA12);
             pA2 = (uint8_t *) read_and_pad_reordered_u8((void *)pA2, &inA21, &inA22);
@@ -169,6 +169,18 @@ uint8_t
             sum4 += inA2 * inB2;
             colCnt--;
         }
+
+            colCnt = ch_im_in * dim_kernel * dim_kernel & 0x3; // config.wt_data_t: u4 (4x uint8_t)
+
+            while (colCnt)
+            {
+            	uint8_t inB1 = (uint8_t) *pB++;
+                uint8_t inA1;
+                inA1 = (uint8_t)*pA++;
+                inA1 -= z_wt;
+                sum += inA1 * inB1;
+                colCnt--;
+            }        
 #endif
 
         /* Normalize by PACT+FW (u4 output) */
@@ -187,7 +199,7 @@ uint8_t
 
     pOut += ch_im_out>>1; // config.out_data_t: u4 (2CH per-Bytes)
 #else
-	#error "Cortex-M0 and Cortex-M3 not supported"
+    #error "Cortex-M0 and Cortex-M3 not supported"
     /* Run the following code as reference implementation for Cortex-M0 and Cortex-M3 */
 #endif /* ARM_MATH_DSP */
 

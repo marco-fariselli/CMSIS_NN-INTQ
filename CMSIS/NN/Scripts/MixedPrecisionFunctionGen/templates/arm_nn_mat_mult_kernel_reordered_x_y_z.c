@@ -119,18 +119,18 @@ uint8_t
 
 % if config.quantization=="PACT":
     int16_t VzA[2] = {z_a,z_a};
-	const int16_t *pzA = VzA;
-	int32_t inzA = *__SIMD32(pzA);
+    const int16_t *pzA = VzA;
+    int32_t inzA = *__SIMD32(pzA);
 
     /* Pre-compute z_a offset over the inputs */
     int32_t z_a_offset  = 0;
-	int32_t z_a_offset2 = 0;
+    int32_t z_a_offset2 = 0;
 
     for (i = 0; i < numCol_A; i += 2) {
-    	int32_t inB1 = *__SIMD32(pB)++;
-    	int32_t inB2 = *__SIMD32(pB2)++;
-    	z_a_offset = __SMLAD(inzA, inB1, z_a_offset);
-    	z_a_offset2 = __SMLAD(inzA, inB2, z_a_offset2);
+        int32_t inB1 = *__SIMD32(pB)++;
+        int32_t inB2 = *__SIMD32(pB2)++;
+        z_a_offset = __SMLAD(inzA, inB1, z_a_offset);
+        z_a_offset2 = __SMLAD(inzA, inB2, z_a_offset2);
     }
 
     /* Leftover column */
@@ -166,8 +166,8 @@ uint8_t
         int32_t     sum4 = bias[i + 1] - z_a_offset2;
 % else:
         int16_t VzA[2] = {z_a[i],z_a[i]};
-	    const int16_t *pzA = VzA;
-	    int32_t inzA = *__SIMD32(pzA);
+        const int16_t *pzA = VzA;
+        int32_t inzA = *__SIMD32(pzA);
 
         int16_t VzA2[2] = {z_a[i+1],z_a[i+1]};
         const int16_t *pzA2 = VzA2;
@@ -184,13 +184,13 @@ uint8_t
 % elif config.wt_data_t=='u4':
         uint16_t  colCnt = numCol_A >> 3; // config.wt_data_t: u4 (8x uint4_t)
 % elif config.wt_data_t=='u2':
-        uint16_t  colCnt = numCol_A >> 4; // config.wt_data_t: u2 (16x uint4_t)
+        uint16_t  colCnt = numCol_A >> 4; // config.wt_data_t: u2 (16x uint2_t)
 % endif
 
         /* accumulate over the vector */
         while (colCnt)
         {
-        	int32_t inA11, inA12, inA21, inA22;
+            int32_t inA11, inA12, inA21, inA22;
 % if config.wt_data_t=='u4':
             int32_t inA13, inA14, inA23, inA24;
 % elif config.wt_data_t=='u2':
@@ -199,51 +199,51 @@ uint8_t
             int32_t inA17, inA18, inA27, inA28;
 % endif
 
-        	int32_t inB1 = *__SIMD32(pB)++;
-        	int32_t inB2 = *__SIMD32(pB2)++;
+            int32_t inB1 = *__SIMD32(pB)++;
+            int32_t inB2 = *__SIMD32(pB2)++;
 
 % if config.wt_data_t=='u8':
             pA = (uint8_t *) read_and_pad_reordered_u8((void *)pA, &inA11, &inA12);
             pA2 = (uint8_t *) read_and_pad_reordered_u8((void *)pA2, &inA21, &inA22);
 %   if config.quantization=="PACT_CH":
-			inA11 = __SSUB16(inA11, inzA);
-			inA12 = __SSUB16(inA12, inzA);
-			inA21 = __SSUB16(inA21, inzA2);
-			inA22 = __SSUB16(inA22, inzA2);
+            inA11 = __SSUB16(inA11, inzA);
+            inA12 = __SSUB16(inA12, inzA);
+            inA21 = __SSUB16(inA21, inzA2);
+            inA22 = __SSUB16(inA22, inzA2);
 %   endif
 % elif config.wt_data_t=='u4':
             pA = (uint8_t *) read_and_pad_reordered_u4((void *)pA, &inA11, &inA12, &inA13, &inA14);
             pA2 = (uint8_t *) read_and_pad_reordered_u4((void *)pA2, &inA21, &inA22, &inA23, &inA24);
 %   if config.quantization=="PACT_CH":
-			inA11 = __SSUB16(inA11, inzA);
-			inA12 = __SSUB16(inA12, inzA);
-			inA21 = __SSUB16(inA21, inzA2);
-			inA22 = __SSUB16(inA22, inzA2);
-			inA13 = __SSUB16(inA13, inzA);
-			inA14 = __SSUB16(inA14, inzA);
-			inA23 = __SSUB16(inA23, inzA2);
-			inA24 = __SSUB16(inA24, inzA2);
+            inA11 = __SSUB16(inA11, inzA);
+            inA12 = __SSUB16(inA12, inzA);
+            inA21 = __SSUB16(inA21, inzA2);
+            inA22 = __SSUB16(inA22, inzA2);
+            inA13 = __SSUB16(inA13, inzA);
+            inA14 = __SSUB16(inA14, inzA);
+            inA23 = __SSUB16(inA23, inzA2);
+            inA24 = __SSUB16(inA24, inzA2);
 %   endif
 % elif config.wt_data_t=='u2':
             pA = (uint8_t *) read_and_pad_reordered_u2((void *)pA, &inA11, &inA12, &inA13, &inA14, &inA15, &inA16, &inA17, &inA18);
             pA2 = (uint8_t *) read_and_pad_reordered_u2((void *)pA2, &inA21, &inA22, &inA23, &inA24, &inA25, &inA26, &inA27, &inA28);
 %   if config.quantization=="PACT_CH":
-			inA11 = __SSUB16(inA11, inzA);
-			inA12 = __SSUB16(inA12, inzA);
-			inA21 = __SSUB16(inA21, inzA2);
-			inA22 = __SSUB16(inA22, inzA2);
-			inA13 = __SSUB16(inA13, inzA);
-			inA14 = __SSUB16(inA14, inzA);
-			inA23 = __SSUB16(inA23, inzA2);
-			inA24 = __SSUB16(inA24, inzA2);
-			inA15 = __SSUB16(inA15, inzA);
-			inA16 = __SSUB16(inA16, inzA);
-			inA25 = __SSUB16(inA25, inzA2);
-			inA26 = __SSUB16(inA26, inzA2);
-			inA17 = __SSUB16(inA17, inzA);
-			inA18 = __SSUB16(inA18, inzA);
-			inA27 = __SSUB16(inA27, inzA2);
-			inA28 = __SSUB16(inA28, inzA2);
+            inA11 = __SSUB16(inA11, inzA);
+            inA12 = __SSUB16(inA12, inzA);
+            inA21 = __SSUB16(inA21, inzA2);
+            inA22 = __SSUB16(inA22, inzA2);
+            inA13 = __SSUB16(inA13, inzA);
+            inA14 = __SSUB16(inA14, inzA);
+            inA23 = __SSUB16(inA23, inzA2);
+            inA24 = __SSUB16(inA24, inzA2);
+            inA15 = __SSUB16(inA15, inzA);
+            inA16 = __SSUB16(inA16, inzA);
+            inA25 = __SSUB16(inA25, inzA2);
+            inA26 = __SSUB16(inA26, inzA2);
+            inA17 = __SSUB16(inA17, inzA);
+            inA18 = __SSUB16(inA18, inzA);
+            inA27 = __SSUB16(inA27, inzA2);
+            inA28 = __SSUB16(inA28, inzA2);
 %   endif
 % endif
 
@@ -333,6 +333,63 @@ uint8_t
             sum4 += inA2 * inB2;
             colCnt--;
         }
+
+% if config.wt_data_t=='u8':
+            colCnt = ch_im_in * dim_kernel * dim_kernel & 0x3; // config.wt_data_t: u4 (4x uint8_t)
+% elif config.wt_data_t=='u4':
+            colCnt = ch_im_in * dim_kernel * dim_kernel & 0x7;; // config.wt_data_t: u4 (8x uint4_t)
+% elif config.wt_data_t=='u2':
+            colCnt = ch_im_in * dim_kernel * dim_kernel & 0xf; // config.wt_data_t: u2 (16x uint2_t)
+% endif
+
+% if config.wt_data_t=='u4':
+            int wt_per_byte = 2;
+% elif config.wt_data_t=='u2':
+            int wt_per_byte = 4;
+% endif
+            while (colCnt)
+            {
+            	uint8_t inB1 = (uint8_t) *pB++;
+                uint8_t inA1;
+% if config.wt_data_t=='u8':
+                inA1 = (uint8_t)*pA++;
+% elif config.wt_data_t=='u4':
+                switch(wt_per_byte)
+                {
+                    case 2:
+                        inA1 = (uint8_t) __USAT(*pA, 4);
+                        break;
+                    case 1:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 4), 4);
+                        pA++;
+                        break;
+                }
+% elif config.wt_data_t=='u2':
+                switch(wt_per_byte)
+                {
+                    case 4:
+                        inA1 = (uint8_t) __USAT(*pA, 2);
+                        break;
+                    case 3:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 2), 2);
+                        break;
+                    case 2:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 2), 4);
+                        break;
+                    case 1:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 2), 6);
+                        pA++;
+                        break;
+                }
+% endif
+% if config.quantization=="PACT":
+                inA1 -= z_wt;
+% elif config.quantization=="PACT_CH":
+                inA1 -= z_wt[ch_out_id];
+% endif
+                sum += inA1 * inB1;
+                colCnt--;
+            }        
 #endif
 
 % if config.folding=="thr":
@@ -379,18 +436,18 @@ uint8_t
         *pOut2++ = ( sum2 & 0x0F ) | (( sum4 << 4 ) & 0xF0 );
 % elif config.out_data_t=='u2':
         if(i & 0x0002 ){ //MSB or-ed with LSB, then increment the pointer
-        	*pOut = (  ( __USAT(sum, 2)  << 4 ) & 0x30
-					 | ( __USAT(sum3, 2) << 6 ) & 0xC0 )
-        			 | *pOut; pOut++;
-			*pOut2 = ( ( __USAT(sum2, 2) << 4 ) & 0x30
-					 | ( __USAT(sum4, 2) << 6 ) & 0xC0 )
-					 | *pOut2; pOut2++;
+            *pOut = (  ( __USAT(sum, 2)  << 4 ) & 0x30
+                     | ( __USAT(sum3, 2) << 6 ) & 0xC0 )
+                     | *pOut; pOut++;
+            *pOut2 = ( ( __USAT(sum2, 2) << 4 ) & 0x30
+                     | ( __USAT(sum4, 2) << 6 ) & 0xC0 )
+                     | *pOut2; pOut2++;
         }
         else { // writing LSB first and implicit cleaning of previous junk value
-			*pOut  = ( ( __USAT(sum, 2)         & 0x03 )
-					   | ( __USAT(sum3, 2) << 2 ) & 0x0C );
-			*pOut2 = ( ( __USAT(sum2, 2)        & 0x03 )
-					   | ( __USAT(sum4, 2) << 2 ) & 0x0C );
+            *pOut  = ( ( __USAT(sum, 2)         & 0x03 )
+                       | ( __USAT(sum3, 2) << 2 ) & 0x0C );
+            *pOut2 = ( ( __USAT(sum2, 2)        & 0x03 )
+                       | ( __USAT(sum4, 2) << 2 ) & 0x0C );
         }
 % endif
 
@@ -412,7 +469,7 @@ uint8_t
     pOut += ch_im_out>>2; // config.out_data_t: u2 (4CHs per-Bytes)
 % endif
 #else
-	#error "Cortex-M0 and Cortex-M3 not supported"
+    #error "Cortex-M0 and Cortex-M3 not supported"
     /* Run the following code as reference implementation for Cortex-M0 and Cortex-M3 */
 #endif /* ARM_MATH_DSP */
 

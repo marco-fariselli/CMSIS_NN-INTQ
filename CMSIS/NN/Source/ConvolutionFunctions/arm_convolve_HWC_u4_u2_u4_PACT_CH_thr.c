@@ -308,7 +308,97 @@ arm_convolve_HWC_u4_u2_u4_PACT_CH_thr(const uint8_t *Im_in,
     }
 
     /* check if there is left-over for compute */
-    $ { config.get_leftover_code() }
+    if (pBuffer != bufferA)
+    {
+
+
+        /* Weights Pointer */
+        const uint8_t *pA = wt;
+        int       i;
+
+        int pOut_per_byte = 4;
+
+        for (i = 0; i < ch_im_out; i++)
+        {
+            /* Offset over Weights */
+            int16_t Vz_wt[2] = {z_wt[ch_out_id], z_wt[ch_out_id]};
+            const int16_t *pzA = VzA;
+            int32_t inzA = *__SIMD32(pzA);
+            int32_t sum = bias[i];
+            int16_t *pB = bufferA;
+
+            uint16_t  colCnt = ch_im_in * dim_kernel * dim_kernel >> 3; // config.wt_data_t: u4 (8x uint4_t)
+
+            /* accumulate over the vector */
+            while (colCnt)
+            {
+                int32_t inA1, inA2;
+                int32_t inA3, inA4;
+                int32_t inB1, inB2;
+
+                pA = (uint8_t *) read_and_pad_reordered_uint4((void *)pA, &inA1, &inA2, &inA3, &inA4);
+
+                inB1 = *__SIMD32(pB)++;
+                inA1 = __SSUB16(inA1, inzA);
+                inA2 = __SSUB16(inA2, inzA);
+                sum = __SMLAD(inA1, inB1, sum);
+                inB2 = *__SIMD32(pB)++;
+                sum = __SMLAD(inA2, inB2, sum);
+                inB1 = *__SIMD32(pB)++;
+                inA3 = __SSUB16(inA3, inzA);
+                inA4 = __SSUB16(inA4, inzA);
+                sum = __SMLAD(inA3, inB1, sum);
+                inB2 = *__SIMD32(pB)++;
+                sum = __SMLAD(inA4, inB2, sum);
+                colCnt--;
+            }
+
+            colCnt = ch_im_in * dim_kernel * dim_kernel & 0x7;; // config.wt_data_t: u4 (8x uint4_t)
+
+            int wt_per_byte = 2;
+            while (colCnt)
+            {
+                uint8_t inB1 = (uint8_t) *pB++;
+                uint8_t inA1;
+                switch(wt_per_byte)
+                {
+                    case 2:
+                        inA1 = (uint8_t) __USAT(*pA, 4);
+                        break;
+                    case 1:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 4), 4);
+                        pA++;
+                        break;
+                }
+                inA1 -= z_wt[ch_out_id];
+                sum += inA1 * inB1;
+                colCnt--;
+            }
+
+            /* Normalize by Thresholds (u2 output) */
+            sum = __int16_to_u2((int16_t) sum , &thresholds[(ch_out_id++)<<2]);
+
+            /* Store Outputs (u2 output) */
+            switch(pOut_per_byte){
+                case 4:
+                    *pOut  = ( __USAT(sum, 2) );
+                    pOut_per_byte--;
+                    break;
+                case 3:
+                    *pOut |= ( __USAT(sum, 2) << 2);
+                    pOut_per_byte--;
+                    break;
+                case 2:
+                    *pOut |= ( __USAT(sum, 2) << 4);
+                    pOut_per_byte--;
+                    break;
+                case 1:
+                    *pOut++ |= ( __USAT(sum, 2) << 6);
+                    pOut_per_byte-=4;
+                    break;
+            }
+        }
+    }
 
 #else
 #error "Cortex-M0 and Cortex-M3 not supported"

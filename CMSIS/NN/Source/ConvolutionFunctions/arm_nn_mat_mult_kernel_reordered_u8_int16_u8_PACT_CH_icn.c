@@ -92,8 +92,8 @@ uint8_t
         const uint8_t *pA2 = pA + numCol_A;
 
         int16_t VzA[2] = {z_a[i],z_a[i]};
-	    const int16_t *pzA = VzA;
-	    int32_t inzA = *__SIMD32(pzA);
+        const int16_t *pzA = VzA;
+        int32_t inzA = *__SIMD32(pzA);
 
         int16_t VzA2[2] = {z_a[i+1],z_a[i+1]};
         const int16_t *pzA2 = VzA2;
@@ -109,17 +109,17 @@ uint8_t
         /* accumulate over the vector */
         while (colCnt)
         {
-        	int32_t inA11, inA12, inA21, inA22;
+            int32_t inA11, inA12, inA21, inA22;
 
-        	int32_t inB1 = *__SIMD32(pB)++;
-        	int32_t inB2 = *__SIMD32(pB2)++;
+            int32_t inB1 = *__SIMD32(pB)++;
+            int32_t inB2 = *__SIMD32(pB2)++;
 
             pA = (uint8_t *) read_and_pad_reordered_u8((void *)pA, &inA11, &inA12);
             pA2 = (uint8_t *) read_and_pad_reordered_u8((void *)pA2, &inA21, &inA22);
-			inA11 = __SSUB16(inA11, inzA);
-			inA12 = __SSUB16(inA12, inzA);
-			inA21 = __SSUB16(inA21, inzA2);
-			inA22 = __SSUB16(inA22, inzA2);
+            inA11 = __SSUB16(inA11, inzA);
+            inA12 = __SSUB16(inA12, inzA);
+            inA21 = __SSUB16(inA21, inzA2);
+            inA22 = __SSUB16(inA22, inzA2);
 
             sum = __SMLAD(inA11, inB1, sum);
             sum2 = __SMLAD(inA11, inB2, sum2);
@@ -157,6 +157,18 @@ uint8_t
             sum4 += inA2 * inB2;
             colCnt--;
         }
+
+            colCnt = ch_im_in * dim_kernel * dim_kernel & 0x3; // config.wt_data_t: u4 (4x uint8_t)
+
+            while (colCnt)
+            {
+            	uint8_t inB1 = (uint8_t) *pB++;
+                uint8_t inA1;
+                inA1 = (uint8_t)*pA++;
+                inA1 -= z_wt[ch_out_id];
+                sum += inA1 * inB1;
+                colCnt--;
+            }        
 #endif
 
         /* Normalize by ICN (u8 output) */
@@ -181,7 +193,7 @@ uint8_t
 
     pOut += ch_im_out;
 #else
-	#error "Cortex-M0 and Cortex-M3 not supported"
+    #error "Cortex-M0 and Cortex-M3 not supported"
     /* Run the following code as reference implementation for Cortex-M0 and Cortex-M3 */
 #endif /* ARM_MATH_DSP */
 

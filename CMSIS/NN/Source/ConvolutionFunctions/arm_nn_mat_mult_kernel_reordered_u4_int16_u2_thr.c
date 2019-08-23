@@ -74,18 +74,18 @@ uint8_t
 
 
     int16_t VzA[2] = {z_a,z_a};
-	const int16_t *pzA = VzA;
-	int32_t inzA = *__SIMD32(pzA);
+    const int16_t *pzA = VzA;
+    int32_t inzA = *__SIMD32(pzA);
 
     /* Pre-compute z_a offset over the inputs */
     int32_t z_a_offset  = 0;
-	int32_t z_a_offset2 = 0;
+    int32_t z_a_offset2 = 0;
 
     for (i = 0; i < numCol_A; i += 2) {
-    	int32_t inB1 = *__SIMD32(pB)++;
-    	int32_t inB2 = *__SIMD32(pB2)++;
-    	z_a_offset = __SMLAD(inzA, inB1, z_a_offset);
-    	z_a_offset2 = __SMLAD(inzA, inB2, z_a_offset2);
+        int32_t inB1 = *__SIMD32(pB)++;
+        int32_t inB2 = *__SIMD32(pB2)++;
+        z_a_offset = __SMLAD(inzA, inB1, z_a_offset);
+        z_a_offset2 = __SMLAD(inzA, inB2, z_a_offset2);
     }
 
     /* Leftover column */
@@ -117,11 +117,11 @@ uint8_t
         /* accumulate over the vector */
         while (colCnt)
         {
-        	int32_t inA11, inA12, inA21, inA22;
+            int32_t inA11, inA12, inA21, inA22;
             int32_t inA13, inA14, inA23, inA24;
 
-        	int32_t inB1 = *__SIMD32(pB)++;
-        	int32_t inB2 = *__SIMD32(pB2)++;
+            int32_t inB1 = *__SIMD32(pB)++;
+            int32_t inB2 = *__SIMD32(pB2)++;
 
             pA = (uint8_t *) read_and_pad_reordered_u4((void *)pA, &inA11, &inA12, &inA13, &inA14);
             pA2 = (uint8_t *) read_and_pad_reordered_u4((void *)pA2, &inA21, &inA22, &inA23, &inA24);
@@ -178,6 +178,28 @@ uint8_t
             sum4 += inA2 * inB2;
             colCnt--;
         }
+
+            colCnt = ch_im_in * dim_kernel * dim_kernel & 0x7;; // config.wt_data_t: u4 (8x uint4_t)
+
+            int wt_per_byte = 2;
+            while (colCnt)
+            {
+            	uint8_t inB1 = (uint8_t) *pB++;
+                uint8_t inA1;
+                switch(wt_per_byte)
+                {
+                    case 2:
+                        inA1 = (uint8_t) __USAT(*pA, 4);
+                        break;
+                    case 1:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 4), 4);
+                        pA++;
+                        break;
+                }
+                inA1 -= z_wt;
+                sum += inA1 * inB1;
+                colCnt--;
+            }        
 #endif
 
         /* Normalize by Thresholds (u2 output) */
@@ -188,18 +210,18 @@ uint8_t
 
         /* Store Outputs (u2 output) */
         if(i & 0x0002 ){ //MSB or-ed with LSB, then increment the pointer
-        	*pOut = (  ( __USAT(sum, 2)  << 4 ) & 0x30
-					 | ( __USAT(sum3, 2) << 6 ) & 0xC0 )
-        			 | *pOut; pOut++;
-			*pOut2 = ( ( __USAT(sum2, 2) << 4 ) & 0x30
-					 | ( __USAT(sum4, 2) << 6 ) & 0xC0 )
-					 | *pOut2; pOut2++;
+            *pOut = (  ( __USAT(sum, 2)  << 4 ) & 0x30
+                     | ( __USAT(sum3, 2) << 6 ) & 0xC0 )
+                     | *pOut; pOut++;
+            *pOut2 = ( ( __USAT(sum2, 2) << 4 ) & 0x30
+                     | ( __USAT(sum4, 2) << 6 ) & 0xC0 )
+                     | *pOut2; pOut2++;
         }
         else { // writing LSB first and implicit cleaning of previous junk value
-			*pOut  = ( ( __USAT(sum, 2)         & 0x03 )
-					   | ( __USAT(sum3, 2) << 2 ) & 0x0C );
-			*pOut2 = ( ( __USAT(sum2, 2)        & 0x03 )
-					   | ( __USAT(sum4, 2) << 2 ) & 0x0C );
+            *pOut  = ( ( __USAT(sum, 2)         & 0x03 )
+                       | ( __USAT(sum3, 2) << 2 ) & 0x0C );
+            *pOut2 = ( ( __USAT(sum2, 2)        & 0x03 )
+                       | ( __USAT(sum4, 2) << 2 ) & 0x0C );
         }
 
         /* skip the row computed with A2 */
@@ -208,7 +230,7 @@ uint8_t
 
     pOut += ch_im_out>>2; // config.out_data_t: u2 (4CHs per-Bytes)
 #else
-	#error "Cortex-M0 and Cortex-M3 not supported"
+    #error "Cortex-M0 and Cortex-M3 not supported"
     /* Run the following code as reference implementation for Cortex-M0 and Cortex-M3 */
 #endif /* ARM_MATH_DSP */
 

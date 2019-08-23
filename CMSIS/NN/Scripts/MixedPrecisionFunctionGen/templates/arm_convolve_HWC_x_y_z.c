@@ -397,7 +397,218 @@ ${config.fn_name}(const uint8_t *Im_in,
     }
 
     /* check if there is left-over for compute */
-    $ { config.get_leftover_code() }
+    if (pBuffer != bufferA)
+    {
+% if config.folding == "weights":
+        /* Negative N_ZERO Normalization */
+        int8_t n_zero1;
+        int8_t n_zero2;
+        __n_zero_negative_normalization(n_zero,&n_zero1,&n_zero2);
+% elif config.folding == "icn":
+        /* Negative N_ZERO Normalization */
+        int8_t n_zero1;
+        int8_t n_zero2;
+% endif
+
+% if config.quantization=="PACT":
+        /* Offset over Weights */
+        int16_t VzA[2] = {z_wt,z_wt};
+        const int16_t *pzA = VzA;
+        int32_t inzA = *__SIMD32(pzA);
+% endif
+
+        /* Weights Pointer */
+        const uint8_t *pA = wt;
+        int       i;
+
+% if config.out_data_t=='u4':
+        int pOut_per_byte = 2;
+% elif config.out_data_t=='u2':
+        int pOut_per_byte = 4;
+% endif
+
+        for (i = 0; i < ch_im_out; i++)
+        {
+% if config.quantization=="PACT_CH":
+            /* Offset over Weights */
+            int16_t Vz_wt[2] = {z_wt[ch_out_id], z_wt[ch_out_id]};
+            const int16_t *pzA = VzA;
+            int32_t inzA = *__SIMD32(pzA);
+% endif
+            int32_t sum = bias[i];
+            int16_t *pB = bufferA;
+
+% if config.wt_data_t=='u8':
+            uint16_t  colCnt = ch_im_in * dim_kernel * dim_kernel >> 2; // config.wt_data_t: u4 (4x uint8_t)
+% elif config.wt_data_t=='u4':
+            uint16_t  colCnt = ch_im_in * dim_kernel * dim_kernel >> 3; // config.wt_data_t: u4 (8x uint4_t)
+% elif config.wt_data_t=='u2':
+            uint16_t  colCnt = ch_im_in * dim_kernel * dim_kernel >> 4; // config.wt_data_t: u2 (16x uint2_t)
+% endif
+
+            /* accumulate over the vector */
+            while (colCnt)
+            {
+                int32_t inA1, inA2;
+% if config.wt_data_t=='u4':
+                int32_t inA3, inA4;
+% elif config.wt_data_t=='u2':
+                int32_t inA3, inA4;
+                int32_t inA5, inA6;
+                int32_t inA7, inA8;
+% endif                
+                int32_t inB1, inB2;
+
+% if config.wt_data_t=='u8':
+                pA = (uint8_t *) read_and_pad_reordered_uint8((void *)pA, &inA1, &inA2);
+% elif config.wt_data_t=='u4':
+                pA = (uint8_t *) read_and_pad_reordered_uint4((void *)pA, &inA1, &inA2, &inA3, &inA4);
+% elif config.wt_data_t=='u2':
+                pA = (uint8_t *) read_and_pad_reordered_uint2((void *)pA, &inA1, &inA2, &inA3, &inA4, &inA5, &inA6, &inA7, &inA8);
+% endif
+
+                inB1 = *__SIMD32(pB)++;
+                inA1 = __SSUB16(inA1, inzA);
+                inA2 = __SSUB16(inA2, inzA);
+                sum = __SMLAD(inA1, inB1, sum);
+                inB2 = *__SIMD32(pB)++;
+                sum = __SMLAD(inA2, inB2, sum);
+% if config.wt_data_t=='u4' or config.wt_data_t=='u2':
+                inB1 = *__SIMD32(pB)++;
+                inA3 = __SSUB16(inA3, inzA);
+                inA4 = __SSUB16(inA4, inzA);
+                sum = __SMLAD(inA3, inB1, sum);
+                inB2 = *__SIMD32(pB)++;
+                sum = __SMLAD(inA4, inB2, sum);
+% endif
+% if config.wt_data_t=='u2':
+                inB1 = *__SIMD32(pB)++;
+                inA5 = __SSUB16(inA5, inzA);
+                inA6 = __SSUB16(inA6, inzA);
+                sum = __SMLAD(inA5, inB1, sum);
+                inB2 = *__SIMD32(pB)++;
+                sum = __SMLAD(inA6, inB2, sum);
+                inB1 = *__SIMD32(pB)++;
+                inA7 = __SSUB16(inA7, inzA);
+                inA8 = __SSUB16(inA8, inzA);
+                sum = __SMLAD(inA7, inB1, sum);
+                inB2 = *__SIMD32(pB)++;
+                sum = __SMLAD(inA8, inB2, sum);
+% endif
+                colCnt--;
+            }
+
+% if config.wt_data_t=='u8':
+            colCnt = ch_im_in * dim_kernel * dim_kernel & 0x3; // config.wt_data_t: u4 (4x uint8_t)
+% elif config.wt_data_t=='u4':
+            colCnt = ch_im_in * dim_kernel * dim_kernel & 0x7;; // config.wt_data_t: u4 (8x uint4_t)
+% elif config.wt_data_t=='u2':
+            colCnt = ch_im_in * dim_kernel * dim_kernel & 0xf; // config.wt_data_t: u2 (16x uint2_t)
+% endif
+
+% if config.wt_data_t=='u4':
+            int wt_per_byte = 2;
+% elif config.wt_data_t=='u2':
+            int wt_per_byte = 4;
+% endif
+            while (colCnt)
+            {
+                uint8_t inB1 = (uint8_t) *pB++;
+                uint8_t inA1;
+% if config.wt_data_t=='u8':
+                inA1 = (uint8_t)*pA++;
+% elif config.wt_data_t=='u4':
+                switch(wt_per_byte)
+                {
+                    case 2:
+                        inA1 = (uint8_t) __USAT(*pA, 4);
+                        break;
+                    case 1:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 4), 4);
+                        pA++;
+                        break;
+                }
+% elif config.wt_data_t=='u2':
+                switch(wt_per_byte)
+                {
+                    case 4:
+                        inA1 = (uint8_t) __USAT(*pA, 2);
+                        break;
+                    case 3:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 2), 2);
+                        break;
+                    case 2:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 2), 4);
+                        break;
+                    case 1:
+                        inA1 = (uint8_t) __USAT(__ROR(*pA, 2), 6);
+                        pA++;
+                        break;
+                }
+% endif
+% if config.quantization=="PACT":
+                inA1 -= z_wt;
+% elif config.quantization=="PACT_CH":
+                inA1 -= z_wt[ch_out_id];
+% endif
+                sum += inA1 * inB1;
+                colCnt--;
+            }
+
+% if config.folding=="thr":
+            /* Normalize by Thresholds (${config.out_data_t} output) */
+%   if config.out_data_t=='u8':
+            #warning No threasholds available at u8
+%   elif config.out_data_t=='u4':
+            sum = __int16_to_u4((int16_t) sum, &thresholds[(ch_out_id++)<<4]);
+%   elif config.out_data_t=='u2':
+            sum = __int16_to_u2((int16_t) sum , &thresholds[(ch_out_id++)<<2]);
+%   endif
+% elif config.folding=="icn":
+            /* Normalize by ICN (${config.out_data_t} output) */
+            __n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
+            sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+% elif config.folding=="weights":
+            /* Normalize by PACT+FW (${config.out_data_t} output) */
+            sum  = ((__HI_SMULL(sum << n_zero1,m_zero)) >> n_zero2) + z_out;
+% endif
+
+            /* Store Outputs (${config.out_data_t} output) */
+% if config.out_data_t=='u8':
+            *pOut++ = (uint8_t) __USAT(sum, 8);
+% elif config.out_data_t=='u4':
+            switch(pOut_per_byte){
+                case 2:
+                    *pOut  = ( __USAT(sum, 4) );
+                    pOut_per_byte--;
+                    break;
+                case 1:
+                    *pOut++ |= ( __USAT(sum, 4) << 4 );
+                    pOut_per_byte=2;
+                    break;
+            }
+% elif config.out_data_t=='u2':
+            switch(pOut_per_byte){
+                case 4:
+                    *pOut  = ( __USAT(sum, 2) );
+                    pOut_per_byte--;
+                    break;
+                case 3:
+                    *pOut |= ( __USAT(sum, 2) << 2);
+                    pOut_per_byte--;
+                    break;
+                case 2:
+                    *pOut |= ( __USAT(sum, 2) << 4);
+                    pOut_per_byte--;
+                    break;
+                case 1:
+                    *pOut++ |= ( __USAT(sum, 2) << 6);
+                    pOut_per_byte-=4;
+                    break;
+            }
+% endif
+        }
+    }
 
 #else
 #error "Cortex-M0 and Cortex-M3 not supported"
