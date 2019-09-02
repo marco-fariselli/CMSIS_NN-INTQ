@@ -144,6 +144,22 @@ uint8_t *arm_nn_mat_mult_kernel_reordered_u2_int16_u8_PACT_CH_thr(const uint8_t 
             inB1 = *__SIMD32(pB)++;
             inB2 = *__SIMD32(pB2)++;
 
+            sum = __SMLAD(inA13, inB1, sum);
+            sum2 = __SMLAD(inA13, inB2, sum2);
+            sum3 = __SMLAD(inA23, inB1, sum3);
+            sum4 = __SMLAD(inA23, inB2, sum4);
+
+            inB1 = *__SIMD32(pB)++;
+            inB2 = *__SIMD32(pB2)++;
+
+            sum = __SMLAD(inA14, inB1, sum);
+            sum2 = __SMLAD(inA14, inB2, sum2);
+            sum3 = __SMLAD(inA24, inB1, sum3);
+            sum4 = __SMLAD(inA24, inB2, sum4);
+            
+            inB1 = *__SIMD32(pB)++;
+            inB2 = *__SIMD32(pB2)++;
+
             sum = __SMLAD(inA15, inB1, sum);
             sum2 = __SMLAD(inA15, inB2, sum2);
             sum3 = __SMLAD(inA25, inB1, sum3);
