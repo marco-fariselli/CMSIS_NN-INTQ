@@ -344,7 +344,7 @@ arm_convolve_HWC_u2_u4_u4_PACT_CH_icn(const uint8_t * Im_in,
         for (i = 0; i < ch_im_out; i++)
         {
             /* Offset over Weights */
-            int16_t Vz_wt[2] = {z_wt[ch_out_id], z_wt[ch_out_id]};
+            int16_t VzA[2] = {z_wt[i], z_wt[i]};
             const int16_t *pzA = VzA;
             int32_t inzA = *__SIMD32(pzA);
             int32_t sum = bias[i];
@@ -359,7 +359,7 @@ arm_convolve_HWC_u2_u4_u4_PACT_CH_icn(const uint8_t * Im_in,
                 int32_t inA3, inA4;
                 int32_t inB1, inB2;
 
-                pA = (uint8_t *) read_and_pad_reordered_uint4((void *)pA, &inA1, &inA2, &inA3, &inA4);
+                pA = (uint8_t *) read_and_pad_reordered_u4((void *)pA, &inA1, &inA2, &inA3, &inA4);
 
                 inB1 = *__SIMD32(pB)++;
                 inA1 = __SSUB16(inA1, inzA);
@@ -393,7 +393,7 @@ arm_convolve_HWC_u2_u4_u4_PACT_CH_icn(const uint8_t * Im_in,
                         pA++;
                         break;
                 }
-                inA1 -= z_wt[ch_out_id];
+                inA1 -= z_wt[i];
                 sum += inA1 * inB1;
                 colCnt--;
             }

@@ -360,7 +360,7 @@ arm_convolve_HWC_u4_u8_u2_icn(const uint8_t * Im_in,
                 int32_t inA7, inA8;
                 int32_t inB1, inB2;
 
-                pA = (uint8_t *) read_and_pad_reordered_uint2((void *)pA, &inA1, &inA2, &inA3, &inA4, &inA5, &inA6, &inA7, &inA8);
+                pA = (uint8_t *) read_and_pad_reordered_u2((void *)pA, &inA1, &inA2, &inA3, &inA4, &inA5, &inA6, &inA7, &inA8);
 
                 inB1 = *__SIMD32(pB)++;
                 inA1 = __SSUB16(inA1, inzA);
@@ -375,19 +375,12 @@ arm_convolve_HWC_u4_u8_u2_icn(const uint8_t * Im_in,
                 inB2 = *__SIMD32(pB)++;
                 sum = __SMLAD(inA4, inB2, sum);
                 inB1 = *__SIMD32(pB)++;
-                inA3 = __SSUB16(inA3, inzA);
-                inA4 = __SSUB16(inA4, inzA);
-                sum = __SMLAD(inA3, inB1, sum);
-                inB2 = *__SIMD32(pB)++;
-                sum = __SMLAD(inA4, inB2, sum);
-
-                inB1 = *__SIMD32(pB)++;
                 inA5 = __SSUB16(inA5, inzA);
                 inA6 = __SSUB16(inA6, inzA);
                 sum = __SMLAD(inA5, inB1, sum);
                 inB2 = *__SIMD32(pB)++;
                 sum = __SMLAD(inA6, inB2, sum);
-                
+
                 inB1 = *__SIMD32(pB)++;
                 inA7 = __SSUB16(inA7, inzA);
                 inA8 = __SSUB16(inA8, inzA);

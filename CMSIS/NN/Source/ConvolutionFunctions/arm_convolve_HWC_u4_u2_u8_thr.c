@@ -341,7 +341,7 @@ arm_convolve_HWC_u4_u2_u8_thr(const uint8_t * Im_in,
                 int32_t inA1, inA2;
                 int32_t inB1, inB2;
 
-                pA = (uint8_t *) read_and_pad_reordered_uint8((void *)pA, &inA1, &inA2);
+                pA = (uint8_t *) read_and_pad_reordered_u8((void *)pA, &inA1, &inA2);
 
                 inB1 = *__SIMD32(pB)++;
                 inA1 = __SSUB16(inA1, inzA);
