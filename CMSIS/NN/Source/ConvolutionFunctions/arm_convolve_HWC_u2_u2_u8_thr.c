@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010-2018 Arm Limited or its affiliates. All rights reserved.
- * Modifications Copyright (C) 2018 University of Bologna
+ * Modifications Copyright (C) 2019 University of Bologna
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -25,11 +25,17 @@
  *               output activations. Outputs are quantized using thr
  *               folding technique.
  *
- * $Date:        March 2019
- * $Authors:     Alessandro Capotondi - alessandro.capotondi@unibo.it
- *               Manuele Rusci - manuele.rusci@unibo.it
- *
  * Target Processor:  Cortex-M cores
+ * 
+ * Modification: Mixed-Precision INT-Q extension
+ *
+ * $Date:        3 September 2019
+ * $Revision:    V.1.2.0
+ *
+ * $Authors:     Alessandro Capotondi - alessandro.capotondi@unibo.it
+ *               Marco Fariselli - marco.fariselli2@unibo.it 
+ *               Manuele Rusci - manuele.rusci@unibo.it
+ *               
  * -------------------------------------------------------------------- */
 #include <assert.h>
 
@@ -359,7 +365,7 @@ arm_convolve_HWC_u2_u2_u8_thr(const uint8_t *Im_in,
             }
 
             /* Normalize by Thresholds (u2 output) */
-            sum = __int16_to_u2((int16_t) sum , &thresholds[(ch_out_id++)<<2]);
+            sum = __int16_to_u2((int16_t) sum , &thresholds[(i)<<2]);
 
             /* Store Outputs (u2 output) */
             switch(pOut_per_byte){

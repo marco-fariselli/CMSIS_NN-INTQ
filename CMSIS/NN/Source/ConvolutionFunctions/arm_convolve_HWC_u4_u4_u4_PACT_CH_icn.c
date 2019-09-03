@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010-2018 Arm Limited or its affiliates. All rights reserved.
- * Modifications Copyright (C) 2018 University of Bologna
+ * Modifications Copyright (C) 2019 University of Bologna
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -25,11 +25,17 @@
  *               output activations. Outputs are quantized using icn
  *               folding technique.
  *
- * $Date:        March 2019
- * $Authors:     Alessandro Capotondi - alessandro.capotondi@unibo.it
- *               Manuele Rusci - manuele.rusci@unibo.it
- *
  * Target Processor:  Cortex-M cores
+ * 
+ * Modification: Mixed-Precision INT-Q extension
+ *
+ * $Date:        3 September 2019
+ * $Revision:    V.1.2.0
+ *
+ * $Authors:     Alessandro Capotondi - alessandro.capotondi@unibo.it
+ *               Marco Fariselli - marco.fariselli2@unibo.it 
+ *               Manuele Rusci - manuele.rusci@unibo.it
+ *               
  * -------------------------------------------------------------------- */
 #include <assert.h>
 
@@ -338,7 +344,7 @@ arm_convolve_HWC_u4_u4_u4_PACT_CH_icn(const uint8_t *Im_in,
         for (i = 0; i < ch_im_out; i++)
         {
             /* Offset over Weights */
-            int16_t Vz_wt[2] = {z_wt[ch_out_id], z_wt[ch_out_id]};
+            int16_t Vz_wt[2] = {z_wt[i], z_wt[i]};
             const int16_t *pzA = VzA;
             int32_t inzA = *__SIMD32(pzA);
             int32_t sum = bias[i];
@@ -393,8 +399,8 @@ arm_convolve_HWC_u4_u4_u4_PACT_CH_icn(const uint8_t *Im_in,
             }
 
             /* Normalize by ICN (u4 output) */
-            __n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
-            sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+            __n_zero_negative_normalization(n_zero[i],&n_zero1,&n_zero2);
+            sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[i])) >> n_zero2) + z_out;
 
             /* Store Outputs (u4 output) */
             switch(pOut_per_byte){

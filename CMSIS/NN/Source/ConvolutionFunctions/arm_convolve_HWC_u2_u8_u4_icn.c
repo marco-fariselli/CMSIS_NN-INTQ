@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010-2018 Arm Limited or its affiliates. All rights reserved.
- * Modifications Copyright (C) 2018 University of Bologna
+ * Modifications Copyright (C) 2019 University of Bologna
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -25,11 +25,17 @@
  *               output activations. Outputs are quantized using icn
  *               folding technique.
  *
- * $Date:        March 2019
- * $Authors:     Alessandro Capotondi - alessandro.capotondi@unibo.it
- *               Manuele Rusci - manuele.rusci@unibo.it
- *
  * Target Processor:  Cortex-M cores
+ * 
+ * Modification: Mixed-Precision INT-Q extension
+ *
+ * $Date:        3 September 2019
+ * $Revision:    V.1.2.0
+ *
+ * $Authors:     Alessandro Capotondi - alessandro.capotondi@unibo.it
+ *               Marco Fariselli - marco.fariselli2@unibo.it 
+ *               Manuele Rusci - manuele.rusci@unibo.it
+ *               
  * -------------------------------------------------------------------- */
 #include <assert.h>
 
@@ -392,8 +398,8 @@ arm_convolve_HWC_u2_u8_u4_icn(const uint8_t *Im_in,
             }
 
             /* Normalize by ICN (u8 output) */
-            __n_zero_negative_normalization(n_zero[ch_out_id],&n_zero1,&n_zero2);
-            sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[ch_out_id++])) >> n_zero2) + z_out;
+            __n_zero_negative_normalization(n_zero[i],&n_zero1,&n_zero2);
+            sum  = ((__HI_SMULL(sum << n_zero1 ,m_zero[i])) >> n_zero2) + z_out;
 
             /* Store Outputs (u8 output) */
             *pOut++ = (uint8_t) __USAT(sum, 8);

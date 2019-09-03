@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010-2018 Arm Limited or its affiliates. All rights reserved.
+ * Modifications Copyright (C) 2019 University of Bologna
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -21,17 +22,17 @@
  * Title:        arm_nnsupportfunctions.h
  * Description:  Public header file of support functions for CMSIS NN Library
  *
- * $Date:        13. July 2018
- * $Revision:    V.1.0.0
- *
  * Target Processor:  Cortex-M cores
  * 
- * Modification: INT-Q extension
- * $Date:        09. July 2018
- * $Authors:     Manuele Rusci - manuele.rusci@unibo.it
- *               Alessandro Capotondi - alessandro.capotondi@unibo.it
- *               Francesco Conti - f.conti@unibo.it
+ * Modification: Mixed-Precision INT-Q extension
  *
+ * $Date:        3 September 2019
+ * $Revision:    V.1.2.0
+ *
+ * $Authors:     Alessandro Capotondi - alessandro.capotondi@unibo.it
+ *               Marco Fariselli - marco.fariselli2@unibo.it 
+ *               Manuele Rusci - manuele.rusci@unibo.it
+ *               
  * -------------------------------------------------------------------- */
 
 #ifndef _ARM_NNSUPPORTFUNCTIONS_H_

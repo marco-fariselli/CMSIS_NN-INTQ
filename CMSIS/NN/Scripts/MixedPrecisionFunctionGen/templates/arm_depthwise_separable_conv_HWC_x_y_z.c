@@ -25,11 +25,17 @@
  *               and produce ${config.in_data_t} output activations.
  *               Outputs are quantized using ${config.folding} folding technique.
  *
- * $Date:        March 2019
- * $Authors:     Alessandro Capotondi - alessandro.capotondi@unibo.it
- *               Manuele Rusci - manuele.rusci@unibo.it
- *
  * Target Processor:  Cortex-M cores
+ * 
+ * Modification: Mixed-Precision INT-Q extension
+ *
+ * $Date:        3 September 2019
+ * $Revision:    V.1.2.0
+ *
+ * $Authors:     Alessandro Capotondi - alessandro.capotondi@unibo.it
+ *               Marco Fariselli - marco.fariselli2@unibo.it 
+ *               Manuele Rusci - manuele.rusci@unibo.it
+ *               
  * -------------------------------------------------------------------- */
 
 #include "arm_math.h"

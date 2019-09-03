@@ -1,6 +1,6 @@
  /*
  * Copyright (C) 2010-2018 Arm Limited or its affiliates. All rights reserved.
- * Modifications Copyright (C) 2018 University of Bologna
+ * Modifications Copyright (C) 2019 University of Bologna
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -23,11 +23,17 @@
  * Description:  Converts the elements of u4 vector to
  *               a reordered int16 vector (without left-shift).
  *
- * $Date:        March 2019
- * $Authors:     Alessandro Capotondi - alessandro.capotondi@unibo.it
- *               Manuele Rusci - manuele.rusci@unibo.it
- *
  * Target Processor:  Cortex-M cores
+ * 
+ * Modification: Mixed-Precision INT-Q extension
+ *
+ * $Date:        3 September 2019
+ * $Revision:    V.1.2.0
+ *
+ * $Authors:     Alessandro Capotondi - alessandro.capotondi@unibo.it
+ *               Marco Fariselli - marco.fariselli2@unibo.it 
+ *               Manuele Rusci - manuele.rusci@unibo.it
+ *               
  * -------------------------------------------------------------------- */
 
 #include "arm_nnsupportfunctions.h"
